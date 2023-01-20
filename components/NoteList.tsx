@@ -1,9 +1,7 @@
 import React from 'react'
 
-const NoteList = () => {
-  return (
-    <div>NoteList</div>
-  )
+function NoteList(){
+    return <div>123</div>
 }
 
 export default NoteList
