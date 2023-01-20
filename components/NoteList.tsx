@@ -1,7 +1,7 @@
 import React from 'react'
 
 function NoteList(){
-    return <div>123</div>
+    return <div>NoteList</div>
 }
 
 export default NoteList
