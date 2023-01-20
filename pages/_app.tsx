@@ -4,6 +4,9 @@ import type { AppProps } from "next/app";
 import { RawNote, RawNoteData, Tag, NoteData } from "./_types";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { v4 as uuidV4 } from "uuid";
+import dynamic from "next/dynamic";
+
+// const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 
 export default function App({ Component, pageProps }: AppProps) {
   const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
@@ -33,5 +36,5 @@ export default function App({ Component, pageProps }: AppProps) {
     setTags((prev) => [...prev, tag]);
   }
 
-  return <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} availableTags={tags} />;
+  return <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} availableTags={tags} notes={notes} noteWithTags={noteWithTags}/>;
 }

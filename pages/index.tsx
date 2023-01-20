@@ -1,10 +1,20 @@
 import Head from "next/head";
 import Image from "next/image";
 import { Layout } from "../components/Layout";
-import NoteList from "../components/NoteList";
+import { Button, Col, Row, Stack } from "react-bootstrap";
+import Link from "next/link";
+import { Note, SimplifiedNote, Tag } from "./_types";
+import dynamic from "next/dynamic";
+const NoteList = dynamic(()=> import('../components/NoteList'), {ssr: false})
 
-export default function Home() {
-  
+
+type HomeProps = {
+  availableTags: Tag[];
+  notes: SimplifiedNote[]
+}
+
+export default function Home({availableTags, notes}: HomeProps) {
+  console.log('notes in home', notes)
 
   return (
     <>
@@ -16,8 +26,20 @@ export default function Home() {
       </Head>
       <main>
         <Layout>
-          <div>Notes</div>
-          <NoteList />
+          <Row className="align-items-center mb-4">
+            <Col><h1>Notes</h1></Col>
+            <Col xs="auto">
+              <Stack gap={2} direction="horizontal">
+                <Link href={'/new'}>
+                  <Button variant="primary">Create</Button>
+                </Link>
+                <Button variant="outline-secondary">
+                  Edit Tags
+                </Button>
+              </Stack>
+            </Col>
+          </Row>
+          <NoteList availableTags={availableTags} notes={notes}/>
         </Layout>
       </main>
     </>

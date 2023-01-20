@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const useLocalStorage = <T>(key: string, initialValue: T | (() => T)) => {
+
+
   const [value, setValue] = useState<T>(() => {
     if (typeof window !== "undefined") {
       const jsonValue = localStorage.getItem(key);

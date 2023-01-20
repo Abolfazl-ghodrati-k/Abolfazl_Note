@@ -27,6 +27,7 @@ const NoteForm = ({ onSubmit, onAddTag, availableTags }: NoteFormProps) => {
       markdown: markdownRef.current!.value,
       tags: selectedTags,
     });
+    // console.log('selectedTags: ', selectedTags)
 
     router.push('..')
   }

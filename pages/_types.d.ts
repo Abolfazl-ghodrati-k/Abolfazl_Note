@@ -1,22 +1,29 @@
 export type Note = { id: string } & NoteData;
 
+export type SimplifiedNote = {
+  tagIds: string[];
+  title: string;
+  id: string;
+  markdown?: string;
+};
+
 export type NoteData = {
-  title: string | number;
+  title: string;
   markdown: string;
   tags: Tag[];
 };
 
 export type Tag = {
-  id: string ;
+  id: string;
   label: string;
 };
 
 export type RawNote = {
-  id : string 
-} & RawNoteData
+  id: string;
+} & RawNoteData;
 
 export type RawNoteData = {
-  title : string | number
-  markdown: string
-  tagIds: string[]
-}
+  title: string;
+  markdown: string;
+  tagIds: string[];
+};
