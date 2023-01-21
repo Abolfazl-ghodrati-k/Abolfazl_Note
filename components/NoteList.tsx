@@ -4,6 +4,7 @@ import { Note, RawNoteData, SimplifiedNote, Tag } from "../pages/_types";
 import NoteCard from "./NoteCard";
 import dynamic from "next/dynamic";
 import ReactSelect from 'react-select'
+import EditTagsModal from "./EditTagsModal";
 
 type NoteListProps = {
   availableTags: Tag[];
@@ -13,7 +14,6 @@ type NoteListProps = {
 function NoteList({ availableTags, notes }: NoteListProps) {
   const [selectedTags, setselectedTags] = React.useState<Tag[]>([]);
   const [Title, setTitle] = React.useState("");
-  console.log(' notes: ',notes)
 
 
   const filteredNotes = React.useMemo(() => {
@@ -30,8 +30,6 @@ function NoteList({ availableTags, notes }: NoteListProps) {
       });
     }
   }, [Title, selectedTags, notes]);
-
-  console.log('filtered notes: ',filteredNotes)
 
   return (
     <div>

@@ -21,12 +21,8 @@ const NoteCard = ({ title, id, tagIds, availableTags }: NoteCardProps) => {
     return Labels;
   });
 
-  useEffect(() => {
-    console.log(TagLabels);
-  });
-
   return (
-    <Card className={`h-100 text-reset text-decoration-none ${styles.card}`}>
+    <Card as={Link} href={`/notes/${id}`} className={`h-100 text-reset text-decoration-none ${styles.card}`}>
       <Card.Body>
         <Stack
           gap={2}

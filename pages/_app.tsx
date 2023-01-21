@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 import { RawNote, RawNoteData, Tag, NoteData } from "./_types";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { v4 as uuidV4 } from "uuid";
-import dynamic from "next/dynamic";
+import '../styles/global.css'
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 
@@ -31,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
       ];
     });
   }
+
 
   function addTag(tag: Tag) {
     setTags((prev) => [...prev, tag]);

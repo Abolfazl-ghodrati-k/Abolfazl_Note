@@ -17,7 +17,7 @@ const NoteForm = ({ onSubmit, onAddTag, availableTags }: NoteFormProps) => {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
-9
+
   const router = useRouter()
 
   function handleSubmit(e: FormEvent) {
