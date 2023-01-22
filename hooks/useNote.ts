@@ -1,8 +1,8 @@
 import React from "react";import useLocalStorage from "./useLocalStorage";
-import { Note, Tag } from "../pages/_types";
+import { Note, RawNote, Tag } from "../pages/_types";
 
 function useNote(Id: string | undefined | string[]) {
-  const [notes, setNotes] = useLocalStorage<Note[]>("NOTES", []);
+  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
   const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
 
   //   console.log(noteid);
