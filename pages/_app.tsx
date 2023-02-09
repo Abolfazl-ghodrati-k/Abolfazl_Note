@@ -46,6 +46,7 @@ import "../styles/global.css";
 // 	});
 // }
 
+
 export default function App({ Component, pageProps }: AppProps) {
 	const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
 	const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);

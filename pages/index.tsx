@@ -17,6 +17,9 @@ type HomeProps = {
   onAddTag:(tag:Tag) => void
 };
 
+
+
+
 export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
   const [ShowEditModal, setShowEditModal] = React.useState(false)
 
