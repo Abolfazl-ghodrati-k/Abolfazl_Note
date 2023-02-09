@@ -13,7 +13,7 @@ type Props = {
 
 export const Layout = (props: Props) => {
   return (
-    <Container className={`my-4 ${props.onNote ? 'mx-4' : ''}`}>
+    <Container className={`my-4 min-h-screen h-[100vh] bg-[red] ${props.onNote ? 'mx-4' : ''}`}>
       <div>{props.children}</div>
     </Container>
   );

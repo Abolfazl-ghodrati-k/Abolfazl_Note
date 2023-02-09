@@ -14,3 +14,9 @@ a {
 * {
   box-sizing: border-box;
 }
+.min-h-screen {
+  min-height: 100vh;
+}
+.border {
+  border: 1px solid black;
+}
