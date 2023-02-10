@@ -1,10 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import type { AppProps } from "next/app";
-import { RawNote, RawNoteData, Tag, NoteData } from "./_types";
+import { RawNote, RawNoteData, Tag, NoteData, User } from "./_types";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { v4 as uuidV4 } from "uuid";
 import "../styles/global.css";
+import Router from "next/router";
+import { userService } from "../services/user-service";
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -46,8 +48,15 @@ import "../styles/global.css";
 // 	});
 // }
 
+import type { NextComponentType } from 'next' //Import Component type
 
-export default function App({ Component, pageProps }: AppProps) {
+//Add custom appProp type then use union to add it
+type CustomAppProps = AppProps & {
+	Component: NextComponentType & { auth?: boolean } // add auth type
+}
+
+
+export default function App({ Component, pageProps }: CustomAppProps) {
 	const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
 	const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
 
@@ -111,13 +120,48 @@ export default function App({ Component, pageProps }: AppProps) {
 	}
 
 	return (
-		<Component
-			{...pageProps}
-			onCreateNote={onCreateNote}
-			onAddTag={addTag}
-			availableTags={tags}
-			notes={notes}
-			noteWithTags={noteWithTags}
-		/>
+		<>
+			{
+				Component.auth ? (
+					<AuthControll>
+						<Component {...pageProps} />
+					</AuthControll>
+				) : (
+					<Component {...pageProps} />
+				)
+			}
+		</>
 	);
+}
+
+function AuthControll({ children }) {
+	const [loading, setloading] = useState(true)
+	const [res, setres] = useState<any>()
+
+	useEffect(() => {
+		userService.getAll().then(response => {
+			setloading(false)
+			console.log(response)
+			setres(response)
+
+		}) as unknown as any
+
+	}, [])
+	if (loading) {
+		return (
+			<div>
+				loading... please wait
+			</div>
+		)
+	}
+	// return (
+	// 	<div>{JSON.stringify(res)}</div>
+	// )
+	else if (res && res.status == 200) {
+		return <>
+			{children}
+		</>
+	} else {
+    	userService.logout();
+    }
 }

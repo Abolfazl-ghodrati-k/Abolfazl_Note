@@ -27,3 +27,10 @@ export type RawNoteData = {
   markdown: string;
   tagIds: string[];
 };
+
+export type User = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  token: string;
+};

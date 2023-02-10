@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { apiHandler } from '../../../helpers/api';
 
 // users in JSON file for simplicity, store in a db for production applications
-import users from './users.json';
 
 export default apiHandler(handler);
 
@@ -16,11 +15,14 @@ function handler(req:NextApiRequest, res:NextApiResponse) {
 
     function getUsers() {
         // return users without passwords in the response
-        const response = users.map(user => {
-            const { password, ...userWithoutPassword } = user;
-            return userWithoutPassword;
-        });
-        return res.status(200).json(response);
+        var users = {
+            "id": 1,
+            "username": "test",
+            "password": "test",
+            "firstName": "Test",
+            "lastName": "User"
+        }
+        return res.status(200).json(users);
     }
 }
  

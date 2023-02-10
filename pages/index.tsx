@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Note, SimplifiedNote, Tag } from "./_types";
 import dynamic from "next/dynamic";
 import EditTagsModal from "../components/EditTagsModal";
+import { useRouter } from 'next/router';
 const NoteList = dynamic(() => import("../components/NoteList"), {
   ssr: false,
 });
@@ -14,7 +15,7 @@ const NoteList = dynamic(() => import("../components/NoteList"), {
 type HomeProps = {
   availableTags: Tag[];
   notes: SimplifiedNote[];
-  onAddTag:(tag:Tag) => void
+  onAddTag: (tag: Tag) => void
 };
 
 
@@ -22,7 +23,11 @@ type HomeProps = {
 
 export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
   const [ShowEditModal, setShowEditModal] = React.useState(false)
+  const router = useRouter()
 
+  const CheckLogin = () => {
+    
+  }
 
   return (
     <>
@@ -39,6 +44,14 @@ export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
             setShowEditModal={setShowEditModal}
             onAddTag={onAddTag}
           />
+          <Row className='align-items-end mb-2'>
+            <Col>
+              <Button variant="outline-secondary" onClick={() => CheckLogin()}>Login</Button>
+            </Col>
+            <Col>
+              <Button variant="outline-secondary" onClick={() => setShowEditModal(true)}>SignUp</Button>
+            </Col>
+          </Row>
 
           <Row className="align-items-center mb-4">
             <Col>
@@ -49,7 +62,7 @@ export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
                 <Link href={"/new"}>
                   <Button variant="primary">Create</Button>
                 </Link>
-                <Button variant="outline-secondary" onClick={()=> setShowEditModal(true)}>Edit Tags</Button>
+                <Button variant="outline-secondary" onClick={() => setShowEditModal(true)}>Edit Tags</Button>
               </Stack>
             </Col>
           </Row>
@@ -59,3 +72,5 @@ export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
     </>
   );
 }
+
+Home.auth = true

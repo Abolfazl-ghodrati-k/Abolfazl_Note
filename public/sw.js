@@ -18,13 +18,13 @@ self.addEventListener('install', (evt) => {
 self.addEventListener('activate', (evt) => {
    console.log("activated: ", evt)
 })
-self.addEventListener('fetch', (evt) => {
-    evt.respondWith(
-        caches.match(evt.request).then(CacheRes => {
-            return CacheRes || fetch(evt.request)
-        })
-    )
-})
+// self.addEventListener('fetch', (evt) => {
+//     evt.respondWith(
+//         caches.match(evt.request).then(CacheRes => {
+//             return CacheRes || fetch(evt.request)
+//         })
+//     )
+// })
 
 self.addEventListener("push", e => {
     const data = e.data.json();
