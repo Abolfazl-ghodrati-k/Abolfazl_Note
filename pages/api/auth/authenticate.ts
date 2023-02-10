@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import getConfig from "next/config";
+import bcrypt from "bcryptjs";
 
 import { apiHandler } from "../../../helpers/api";
 
@@ -8,7 +9,6 @@ const { serverRuntimeConfig } = getConfig();
 // users in JSON file for simplicity, store in a db for production applications
 import users from "./users.json";
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../utils/db";
 import db from "../../../utils/db";
 import User from "../../../models/User";
 
@@ -24,36 +24,39 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
   async function authenticate() {
     await db.connect();
-    const user = new User({
-      firstName: 'bill',
-      lastName: 'lastname',
-      username:'bill',
-      password:'bill'
-    })
-    try {
-      
-      await user.save()
-      res.json({"user saved"})
-    } catch (error) {
-      res.json({error})
-    }
-    
-    
-    // const { username, password } = req.body;
+
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
     // const user = users.find(u => u.username === username && u.password === password);
 
-    // if (!user) throw 'Username or password is incorrect';
+    if (!user) throw "Username or password is incorrect";
+
+    const isSamePass = await bcrypt.compare(req.body.password, user.password);
 
     // // create a jwt token that is valid for 7 days
-    // const token = jwt.sign({ sub: user.id }, serverRuntimeConfig.secret, { expiresIn: '7d' });
+    if (isSamePass) {
+      const token = jwt.sign(
+        {
+          username: req.body.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        },
+        serverRuntimeConfig.secret,
+        { expiresIn: "30d" }
+      );
 
-    // // return basic user details and token
-    // return res.status(200).json({
-    //     id: user.id,
-    //     username: user.username,
-    //     firstName: user.firstName,
-    //     lastName: user.lastName,
-    //     token
-    // });
+      // // return basic user details and token
+      return res.status(200).json({
+        id: user._id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token,
+      });
+    } else {
+      throw "Wrong username or password"
+    }
   }
 }

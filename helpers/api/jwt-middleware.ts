@@ -15,6 +15,7 @@ function jwtMiddleware(req: NextApiRequest, res: NextApiResponse) {
 		path: [
 			// public routes that don't require authentication
 			"/api/auth/authenticate",
+			"/api/auth/signup"
 		],
 	});
 
