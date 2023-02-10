@@ -27,7 +27,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     if (user) throw "Account already exists";
     const hashedPass = await bcrypt.hash(req.body.password, 10);
 
-    const token = jwt.sign(
+    const token = await jwt.sign(
       {
         username: req.body.username,
         firstName: req.body.firstName,

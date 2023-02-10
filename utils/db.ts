@@ -1,28 +1,27 @@
 import mongoose from "mongoose";
 
-var connection: {
-  isConnected: mongoose.ConnectionStates | boolean;
+type Connection = {
+  isConnected: mongoose.ConnectionStates | boolean ;
 };
 
+var connection: Connection = {
+  isConnected: false
+}
+
 async function connect() {
-  // try {
-  //   if (connection.isConnected) {
-  //     return;
-  //   }
-  //   if (mongoose.connections.length > 0) {
-  //     connection.isConnected = mongoose.connections[0].readyState;
-  //     if (connection.isConnected == 1) {
-  //       return;
-  //     }
-  //     await mongoose.disconnect();
-  //   }
+  if (connection?.isConnected) {
+    return;
+  }
+  if (mongoose.connections.length > 0) {
+    connection.isConnected = mongoose.connections[0].readyState;
+    if (connection.isConnected == 1) {
+      return;
+    }
+    await mongoose.disconnect();
+  }
   mongoose.set("strictQuery", true);
-  mongoose.connect(process.env.MONGODB_URI+'/test');
-  //   connection.isConnected = db.connections[0].readyState;
-  //   return { isConnected: true, message: "Connected Successfully" };
-  // } catch (error) {
-  //   return { isConnected: false, message: error };
-  // }
+  var db = await mongoose.connect(process.env.MONGODB_URI + "/test");
+  connection.isConnected = db.connections[0].readyState;
   return db;
 }
 

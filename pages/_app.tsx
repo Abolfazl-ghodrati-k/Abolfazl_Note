@@ -49,6 +49,7 @@ import { userService } from "../services/user-service";
 // }
 
 import type { NextComponentType } from 'next' //Import Component type
+import { stringify } from "querystring";
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
@@ -147,21 +148,24 @@ function AuthControll({ children }) {
 		}) as unknown as any
 
 	}, [])
-	if (loading) {
-		return (
-			<div>
-				loading... please wait
-			</div>
-		)
-	}
-	// return (
-	// 	<div>{JSON.stringify(res)}</div>
-	// )
-	else if (res && res.status == 200) {
-		return <>
-			{children}
-		</>
-	} else {
-    	userService.logout();
-    }
+	return(<div>
+		{JSON.stringify(res)}
+	</div>)
+	// if (loading) {
+	// 	return (
+	// 		<div>
+	// 			loading... please wait
+	// 		</div>
+	// 	)
+	// }
+	// // return (
+	// // 	<div>{JSON.stringify(res)}</div>
+	// // )
+	// else if (res && res.status == 200) {
+	// 	return <>
+	// 		{children}
+	// 	</>
+	// } else {
+    // 	userService.logout();
+    // }
 }
