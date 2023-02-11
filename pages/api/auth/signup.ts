@@ -9,8 +9,19 @@ const { serverRuntimeConfig } = getConfig();
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";
+import { Types } from 'mongoose'
 
 export default apiHandler(handler);
+
+
+interface NewUser {
+  _id: Types.ObjectId
+  firstName?: string
+  lastName?: string
+  username: string
+  password: string
+  token: string
+}
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
@@ -22,9 +33,16 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
   async function createUser() {
     await db.connect();
-    const { username, password } = req.body;
+    
+    const { username } = req.body;
     const user = await User.findOne({ username });
-    if (user) throw "Account already exists";
+    
+    
+    if(user){
+      throw "user exists"
+    }
+    
+    
     const hashedPass = await bcrypt.hash(req.body.password, 10);
 
     const token = await jwt.sign(
@@ -37,17 +55,21 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       { expiresIn: "30d" }
     );
     const newUser = new User({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstName: req.body?.firstName,
+      lastName: req.body?.lastName,
       username: req.body.username,
       password: hashedPass,
-      token,
     });
+    var newuser = {...newUser._doc}
     try {
-      newUser.save();
-      res.status(201).json({ newUser });
+      await newUser.save();
+      var SavedUser: NewUser = {
+        ...newuser, token
+      }
+      res.status(201).json({...SavedUser});
     } catch (error) {
       res.status(401).json({ message: error });
     }
+  
   }
 }

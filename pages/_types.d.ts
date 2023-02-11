@@ -28,7 +28,7 @@ export type RawNoteData = {
   tagIds: string[];
 };
 
-export type User = {
+export interface User {
   firstName: string;
   lastName: string;
   username: string;

@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 type Connection = {
-  isConnected: mongoose.ConnectionStates | boolean ;
+  isConnected: mongoose.ConnectionStates | boolean;
 };
 
 var connection: Connection = {
-  isConnected: false
-}
+  isConnected: false,
+};
 
 async function connect() {
   if (connection?.isConnected) {
@@ -20,7 +20,7 @@ async function connect() {
     await mongoose.disconnect();
   }
   mongoose.set("strictQuery", true);
-  var db = await mongoose.connect(process.env.MONGODB_URI + "/test");
+  var db = await mongoose.connect(process.env.MONGODB_URI);
   connection.isConnected = db.connections[0].readyState;
   return db;
 }

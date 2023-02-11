@@ -8,10 +8,8 @@ import { User } from "../pages/_types";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}/auth`;
-// const [user, userSet] = useLocalStorage<User>("User", {} as User);
 const userSubject = new BehaviorSubject(
-  // user
-  null
+  process.browser && JSON.parse(localStorage.getItem("user"))
 );
 
 export const userService = {
@@ -33,8 +31,8 @@ async function login(username: string, password: string) {
   // publish user to subscribers and store in local storage to stay logged in between page refreshes
   userSubject.next(user);
 
-  // userSet(user)
-  
+  localStorage.setItem('user', JSON.stringify(user));
+
   return user;
 }
 
@@ -44,16 +42,16 @@ async function signup(username: string, password: string) {
     password,
   });
   userSubject.next(user);
-  // userSet(user)
+  localStorage.setItem('user', JSON.stringify(user));
 
   return user;
 }
 
 function logout() {
   // remove user from local storage, publish null to user subscribers and redirect to login page
-  // userSet({} as User)
+  localStorage.removeItem('user');
   userSubject.next(null);
-  Router.push("/unAuthorized");
+  Router.push("/login");
 }
 
 function getAll() {

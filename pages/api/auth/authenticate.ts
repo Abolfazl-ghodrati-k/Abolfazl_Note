@@ -31,13 +31,18 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // const user = users.find(u => u.username === username && u.password === password);
 
-    if (!user) throw "Username or password is incorrect";
+    if (!user) {
+      return res.status(200).json({
+        token: false,
+        message: "Wrong username or password"
+      })
+    }
 
-    const isSamePass = await bcrypt.compare(req.body.password, user.password);
+    const isSamePass = await bcrypt.compare(password, user.password);
 
     // // create a jwt token that is valid for 7 days
     if (isSamePass) {
-      const token = jwt.sign(
+      const token = await jwt.sign(
         {
           username: req.body.username,
           firstName: user.firstName,
@@ -51,12 +56,15 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       return res.status(200).json({
         id: user._id,
         username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
         token,
       });
     } else {
-      throw "Wrong username or password"
+      return res.status(200).json({
+        token: false,
+        message: "Wrong username or password"
+      })
     }
   }
 }

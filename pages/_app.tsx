@@ -7,6 +7,8 @@ import { v4 as uuidV4 } from "uuid";
 import "../styles/global.css";
 import Router from "next/router";
 import { userService } from "../services/user-service";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -48,124 +50,117 @@ import { userService } from "../services/user-service";
 // 	});
 // }
 
-import type { NextComponentType } from 'next' //Import Component type
-import { stringify } from "querystring";
+import type { NextComponentType } from "next"; //Import Component type
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
-	Component: NextComponentType & { auth?: boolean } // add auth type
-}
-
+  Component: NextComponentType & { auth?: boolean }; // add auth type
+};
 
 export default function App({ Component, pageProps }: CustomAppProps) {
-	const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
-	const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
+  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
+  const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
 
-	// useEffect(() => {
-	// 	// if ("serviceWorker" in navigator) {
-	// 	// 	const  send = async() =>  {
-	// 	// 		//register service worker
-	// 	// 		const register = await navigator.serviceWorker.register(
-	// 	// 			"/sw.js"
-	// 	// 		);
+  // useEffect(() => {
+  // 	// if ("serviceWorker" in navigator) {
+  // 	// 	const  send = async() =>  {
+  // 	// 		//register service worker
+  // 	// 		const register = await navigator.serviceWorker.register(
+  // 	// 			"/sw.js"
+  // 	// 		);
 
-	// 	// 		//register push
-	// 	// 		const subscription = await register.pushManager.subscribe({
-	// 	// 			userVisibleOnly: true,
+  // 	// 		//register push
+  // 	// 		const subscription = await register.pushManager.subscribe({
+  // 	// 			userVisibleOnly: true,
 
-	// 	// 			//public vapid key
-	// 	// 			applicationServerKey:
-	// 	// 				"BOJbNAs15gxY3Fj75-HbUzBEqyp7I40uG5yHSYIqRQYIf2b9MfZwod9g_Lb16GG2asT304tPTBMlcKAC_NXQj7g",
-	// 	// 		});
+  // 	// 			//public vapid key
+  // 	// 			applicationServerKey:
+  // 	// 				"BOJbNAs15gxY3Fj75-HbUzBEqyp7I40uG5yHSYIqRQYIf2b9MfZwod9g_Lb16GG2asT304tPTBMlcKAC_NXQj7g",
+  // 	// 		});
 
-	// 	// 		console.log("subscription: ", JSON.stringify(subscription));
+  // 	// 		console.log("subscription: ", JSON.stringify(subscription));
 
-	// 	// 		// //Send push notification
-	// 	// 		// await fetch("http://localhost:3000/api/hello", {
-	// 	// 		// 	method: "POST",
-	// 	// 		// 	body: JSON.stringify(subscription),
-	// 	// 		// 	headers: {
-	// 	// 		// 		"content-type": "application/json",
-	// 	// 		// 	},
-	// 	// 		// });
-	// 	// 	}
+  // 	// 		// //Send push notification
+  // 	// 		// await fetch("http://localhost:3000/api/hello", {
+  // 	// 		// 	method: "POST",
+  // 	// 		// 	body: JSON.stringify(subscription),
+  // 	// 		// 	headers: {
+  // 	// 		// 		"content-type": "application/json",
+  // 	// 		// 	},
+  // 	// 		// });
+  // 	// 	}
 
-	// 	// 	send()
-	// 	// 		.catch((err) => console.log("err",err))
-	// 	// 		.then((res) => console.log("res",res));
-	// 	// }
-	// }, []);
+  // 	// 	send()
+  // 	// 		.catch((err) => console.log("err",err))
+  // 	// 		.then((res) => console.log("res",res));
+  // 	// }
+  // }, []);
 
-	const noteWithTags = React.useMemo(() => {
-		if (notes) {
-			return notes.map((note) => {
-				return {
-					...note,
-					tags: tags.filter((tag) => note.tagIds.includes(tag.id)),
-				};
-			});
-		}
-	}, [notes, tags]);
+  const noteWithTags = React.useMemo(() => {
+    if (notes) {
+      return notes.map((note) => {
+        return {
+          ...note,
+          tags: tags.filter((tag) => note.tagIds.includes(tag.id)),
+        };
+      });
+    }
+  }, [notes, tags]);
 
-	function onCreateNote({ tags, ...data }: NoteData) {
-		setNotes((notes) => {
-			return [
-				...notes,
-				{ ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) },
-			];
-		});
-	}
+  function onCreateNote({ tags, ...data }: NoteData) {
+    setNotes((notes) => {
+      return [
+        ...notes,
+        { ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) },
+      ];
+    });
+  }
 
-	function addTag(tag: Tag) {
-		setTags((prev) => [...prev, tag]);
-	}
+  function addTag(tag: Tag) {
+    setTags((prev) => [...prev, tag]);
+  }
 
-	return (
-		<>
-			{
-				Component.auth ? (
-					<AuthControll>
-						<Component {...pageProps} />
-					</AuthControll>
-				) : (
-					<Component {...pageProps} />
-				)
-			}
-		</>
-	);
+  return (
+    <>
+      {Component.auth ? (
+        <AuthControll>
+          <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
+        </AuthControll>
+      ) : (
+        <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
+      )}
+	  <ToastContainer position="top-center" />
+    </>
+  );
 }
 
 function AuthControll({ children }) {
-	const [loading, setloading] = useState(true)
-	const [res, setres] = useState<any>()
+  const [loading, setloading] = useState(true);
+  const [res, setres] = useState<any>();
 
-	useEffect(() => {
-		userService.getAll().then(response => {
-			setloading(false)
-			console.log(response)
-			setres(response)
-
-		}) as unknown as any
-
-	}, [])
-	return(<div>
-		{JSON.stringify(res)}
-	</div>)
-	// if (loading) {
-	// 	return (
-	// 		<div>
-	// 			loading... please wait
-	// 		</div>
-	// 	)
-	// }
-	// // return (
-	// // 	<div>{JSON.stringify(res)}</div>
-	// // )
-	// else if (res && res.status == 200) {
-	// 	return <>
-	// 		{children}
-	// 	</>
-	// } else {
-    // 	userService.logout();
-    // }
+  useEffect(() => {
+    userService.getAll().then((response) => {
+      setloading(false);
+      console.log(response);
+      setres(response);
+    }) as unknown as any;
+  }, []);
+  // return <div>{JSON.stringify(res)}</div>;
+  if (loading) {
+  	return (
+  		<div>
+  			loading... please wait
+  		</div>
+  	)
+  }
+  // return (
+  // 	<div>{JSON.stringify(res)}</div>
+  // )
+  else if (res.message.username) {
+  	return <>
+  		{children}
+  	</>
+  } else {
+  	userService.logout();
+  }
 }

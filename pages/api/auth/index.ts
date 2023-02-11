@@ -24,7 +24,6 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     const {authorization} = req.headers;
     const token = authorization.split(" ")[1]
     const response = jwt.verify(token, serverRuntimeConfig.secret) as JwtPayload
-    response.token = token
     
     return res.status(200).json({ message: response });
   }

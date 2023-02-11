@@ -3,7 +3,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import { Note, RawNoteData, SimplifiedNote, Tag } from "../pages/_types";
 import NoteCard from "./NoteCard";
 import dynamic from "next/dynamic";
-import ReactSelect from 'react-select'
+import ReactSelect from "react-select";
 import EditTagsModal from "./EditTagsModal";
 
 type NoteListProps = {
@@ -14,7 +14,6 @@ type NoteListProps = {
 function NoteList({ availableTags, notes }: NoteListProps) {
   const [selectedTags, setselectedTags] = React.useState<Tag[]>([]);
   const [Title, setTitle] = React.useState("");
-
 
   const filteredNotes = React.useMemo(() => {
     if (notes) {
@@ -39,6 +38,7 @@ function NoteList({ availableTags, notes }: NoteListProps) {
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
               <Form.Control
+                placeholder="Title..."
                 type="text"
                 value={Title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -73,7 +73,12 @@ function NoteList({ availableTags, notes }: NoteListProps) {
         {filteredNotes &&
           filteredNotes.map((note) => (
             <Col key={note.id}>
-              <NoteCard title={note.title} id={note.id} tagIds={note.tagIds} availableTags={availableTags} />
+              <NoteCard
+                title={note.title}
+                id={note.id}
+                tagIds={note.tagIds}
+                availableTags={availableTags}
+              />
             </Col>
           ))}
       </Row>
