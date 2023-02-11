@@ -2,7 +2,7 @@ import React from "react";
 import { Layout } from "../components/Layout";
 import { Button, Col, Row, Stack } from "react-bootstrap";
 import Link from "next/link";
-import { Note, SimplifiedNote, Tag } from "./_types";
+import { SimplifiedNote, Tag } from "./_types";
 import dynamic from "next/dynamic";
 import EditTagsModal from "../components/EditTagsModal";
 import Router, { useRouter } from "next/router";
@@ -17,9 +17,19 @@ type HomeProps = {
   onAddTag: (tag: Tag) => void;
 };
 
+export type User = {
+  firstname: string
+  id: string
+  lastName: string
+  token: string
+  username: string
+}
+
 export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
   const [ShowEditModal, setShowEditModal] = React.useState(false);
+  const [User, userSet] = React.useState(userService.userValue)
   const router = useRouter();
+  console.log(User)
 
   return (
     <>
@@ -30,8 +40,8 @@ export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
             setShowEditModal={setShowEditModal}
             onAddTag={onAddTag}
           />
-          {userService.userValue ? (
-            <div></div>
+          {User ? (
+            <div>{User.username}</div>
           ) : (
             <div
               className="d-flex align-items-center  gap-2  mb-2"
@@ -75,5 +85,3 @@ export default function Home({ availableTags, notes, onAddTag }: HomeProps) {
     </>
   );
 }
-
-Home.auth = true

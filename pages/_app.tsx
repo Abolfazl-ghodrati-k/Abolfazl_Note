@@ -9,6 +9,7 @@ import Router from "next/router";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SSRProvider from 'react-bootstrap/SSRProvider';
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -121,7 +122,7 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   }
 
   return (
-    <>
+    <SSRProvider>
       {Component.auth ? (
         <AuthControll>
           <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
@@ -129,8 +130,8 @@ export default function App({ Component, pageProps }: CustomAppProps) {
       ) : (
         <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
       )}
-	  <ToastContainer position="top-center" />
-    </>
+	    <ToastContainer position="top-center" />
+    </SSRProvider>
   );
 }
 
@@ -145,7 +146,6 @@ function AuthControll({ children }) {
       setres(response);
     }) as unknown as any;
   }, []);
-  // return <div>{JSON.stringify(res)}</div>;
   if (loading) {
   	return (
   		<div>
