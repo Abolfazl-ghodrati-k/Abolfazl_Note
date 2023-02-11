@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import type { AppProps } from "next/app";
-import { RawNote, RawNoteData, Tag, NoteData, User } from "./_types";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { v4 as uuidV4 } from "uuid";
 import "../styles/global.css";
-import Router from "next/router";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -59,8 +55,7 @@ type CustomAppProps = AppProps & {
 };
 
 export default function App({ Component, pageProps }: CustomAppProps) {
-  const [notes, setNotes] = useLocalStorage<RawNote[]>("NOTES", []);
-  const [tags, setTags] = useLocalStorage<Tag[]>("TAGS", []);
+
 
   // useEffect(() => {
   // 	// if ("serviceWorker" in navigator) {
@@ -97,38 +92,14 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   // 	// }
   // }, []);
 
-  const noteWithTags = React.useMemo(() => {
-    if (notes) {
-      return notes.map((note) => {
-        return {
-          ...note,
-          tags: tags.filter((tag) => note.tagIds.includes(tag.id)),
-        };
-      });
-    }
-  }, [notes, tags]);
-
-  function onCreateNote({ tags, ...data }: NoteData) {
-    setNotes((notes) => {
-      return [
-        ...notes,
-        { ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) },
-      ];
-    });
-  }
-
-  function addTag(tag: Tag) {
-    setTags((prev) => [...prev, tag]);
-  }
-
   return (
     <SSRProvider>
       {Component.auth ? (
         <AuthControll>
-          <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
+          <Component {...pageProps} />
         </AuthControll>
       ) : (
-        <Component {...pageProps} onCreateNote={onCreateNote} onAddTag={addTag} noteWithTags={noteWithTags} notes={notes} availableTags={tags}/>
+        <Component {...pageProps}/>
       )}
 	    <ToastContainer position="top-center" />
     </SSRProvider>
