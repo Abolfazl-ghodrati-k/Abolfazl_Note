@@ -1,0 +1,56 @@
+.sidebar_container_closed {
+  min-width: 0px;
+  animation-name: open_sidebar;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  background-color: black;
+}
+
+.sidebar_container_opened {
+    min-width: 85vw;
+  animation-name: close_sidebar;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  background-color: black;
+}
+
+@keyframes close_sidebar {
+    from {
+        min-width: 85vw;
+    }
+    to {
+        min-width: 0px;
+        width: 0;
+    }
+}
+
+@keyframes open_sidebar {
+    from {
+        min-width: 0;
+    }
+    to{
+        min-width: 85vw;
+    }
+}
+
+.sidebar_wrapper {
+  width: 100%;
+  background-color: rgb(31, 31, 31);
+  min-height: 100vh;
+  border-radius: 0 20px 20px 0;
+  margin: 5px 0
+}
+
+.profile{
+
+}
+
+.side_nav {
+
+}

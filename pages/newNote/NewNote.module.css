@@ -1,0 +1,126 @@
+.new_note_container {
+  background-color: black;
+  position: relative;
+  min-height: 100vh;
+  min-width: 100vw;
+  overflow-x: hidden
+}
+
+.new_note_header {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px rgb(92, 92, 92) solid;
+}
+
+.new_note_title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 80%;
+}
+
+.new_note_title > img {
+  cursor: pointer;
+}
+
+.new_note_input {
+  height: 30px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.menu {
+  position: absolute;
+  color: white;
+  background-color: rgb(46, 46, 46);
+  border-radius: 15px;
+  padding: 10px 15px;
+  right: 5px;
+  top: 5px;
+  left: 100%;
+  bottom: 100%;
+  width: 0;
+}
+
+.opened_menu {
+  position: absolute;
+  color: white;
+  background-color: rgb(46, 46, 46);
+  border-radius: 15px;
+  padding: 10px 15px;
+  right: 5px;
+  top: 5px;
+  left: 100%;
+  bottom: 100%;
+  animation-name: open_menu;
+  animation-duration: 0.1s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes open_menu {
+  0% {
+    left: 100%;
+    bottom: 100%;
+    font-size: 0.6rem;
+  }
+  20% {
+    left: 80%;
+    bottom: 80%;
+    font-size: 0.65rem;
+  }
+  40% {
+    left: 76%;
+    bottom: 79%;
+    font-size: 0.7rem;
+  }
+  60% {
+    font-size: 0.75rem;
+  }
+  80% {
+    left: 69%;
+    bottom: 78.5%;
+    font-size: 0.8rem;
+  }
+  90% {
+    font-size: 0.85rem;
+  }
+
+  100% {
+    left: auto;
+    bottom: auto;
+    font-size: .9rem;
+  }
+}
+
+.menu ul {
+  list-style-type: none;
+  display: flex-column;
+}
+
+.menu ul li {
+  margin: 10px 0;
+}
+
+.opened_menu ul li {
+  margin: 10px 0;
+}
+
+.opened_menu ul {
+  list-style-type: none;
+  display: flex-column;
+}
+
+.note_markdown {
+    background-color: aqua;
+    min-height: 92vh;
+}
