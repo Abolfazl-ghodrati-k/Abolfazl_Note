@@ -3,7 +3,6 @@ import getConfig from "next/config";
 import Router from "next/router";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
-import useLocalStorage from "../hooks/useLocalStorage";
 import { User } from "../pages/_types";
 
 const { publicRuntimeConfig } = getConfig();

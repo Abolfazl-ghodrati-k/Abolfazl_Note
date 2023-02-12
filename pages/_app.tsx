@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 import type { AppProps } from "next/app";
-import "../styles/global.css";
+import "../styles/global.scss";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import SSRProvider from 'react-bootstrap/SSRProvider';
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -48,15 +45,14 @@ import SSRProvider from 'react-bootstrap/SSRProvider';
 // }
 
 import type { NextComponentType } from "next"; //Import Component type
+import { observer } from "mobx-react-lite";
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { auth?: boolean }; // add auth type
 };
 
-export default function App({ Component, pageProps }: CustomAppProps) {
-
-
+const App = observer(({ Component, pageProps }: CustomAppProps) => {
   // useEffect(() => {
   // 	// if ("serviceWorker" in navigator) {
   // 	// 	const  send = async() =>  {
@@ -93,18 +89,20 @@ export default function App({ Component, pageProps }: CustomAppProps) {
   // }, []);
 
   return (
-    <SSRProvider>
+    <>
       {Component.auth ? (
         <AuthControll>
           <Component {...pageProps} />
         </AuthControll>
       ) : (
-        <Component {...pageProps}/>
+        <Component {...pageProps} />
       )}
-	    <ToastContainer position="top-center" />
-    </SSRProvider>
+      <ToastContainer position="top-center" />
+    </>
   );
-}
+});
+
+export default App;
 
 function AuthControll({ children }) {
   const [loading, setloading] = useState(true);
@@ -118,20 +116,10 @@ function AuthControll({ children }) {
     }) as unknown as any;
   }, []);
   if (loading) {
-  	return (
-  		<div>
-  			loading... please wait
-  		</div>
-  	)
-  }
-  // return (
-  // 	<div>{JSON.stringify(res)}</div>
-  // )
-  else if (res.message.username) {
-  	return <>
-  		{children}
-  	</>
+    return <div>loading... please wait</div>;
+  } else if (res.message.username) {
+    return <>{children}</>;
   } else {
-  	userService.logout();
+    userService.logout();
   }
 }
