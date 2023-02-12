@@ -8,16 +8,25 @@ import { Note } from "../_types";
 
 type Props = {
   Notes: Note[] | [];
-  title: string
-}
+  title: string;
+};
 
-function NotesContainer({Notes, title}) {
+function NotesContainer({ Notes, title }: Props) {
   const [showSidebar, setshowSidebar] = useState(false);
   const [showSidebarCopy, setshowSidebarCopy] = useState(false);
+  const [ShowMenu, setShowMenu] = useState(false);
 
-  const ShowNote = (id:string) => {
+  const ShowNote = (id: string) => {
     Router.push(`/notes/${id}`);
   };
+
+  function show() {
+    if (ShowMenu) {
+      return styles.opened_menu;
+    } else {
+      return styles.menu;
+    }
+  }
 
   return (
     <div
@@ -27,18 +36,43 @@ function NotesContainer({Notes, title}) {
           : `${styles.note_app_container}`
       }
     >
+      <div className={show()}>
+        <ul>
+          <li>Share</li>
+          <li>Delete</li>
+          <li>Add to Favorites</li>
+        </ul>
+      </div>
       {showSidebar && <SideBar showSidebar={showSidebarCopy} />}
       <div className={styles.note_app}>
         {/* Title */}
-        <div className={styles.note_title}>
+        <div
+          className={styles.note_title}
+          onClick={() => {
+            setShowMenu(false);
+          }}
+        >
           <h1>{title}</h1>
           <small>{"11"} notes</small>
         </div>
         {/* NavBar */}
-        <div className={styles.note_navbar}>
+        <div
+          className={styles.note_navbar}
+          onClick={() => {
+            if (ShowMenu) {
+              setShowMenu(false);
+            }
+          }}
+        >
           <div className={styles.main_nav}>
             {/* Search Handling --------------------------------------------------------------------------------- */}
-            <div className={styles.search_icon}>
+            <div
+              className={styles.search_icon}
+              onClick={() => {
+                Router.push("/search");
+                setShowMenu(false);
+              }}
+            >
               <Image
                 src={"/Images/Icons/search.svg"}
                 width={20}
@@ -46,8 +80,13 @@ function NotesContainer({Notes, title}) {
                 alt="search"
               />
             </div>
-            {/* Mini Menu *-------------------------------------------------------------------------------------- */}
-            <div className={styles.search_icon}>
+            {/* Mini Menu --------------------------------------------------------------------------------------- */}
+            <div
+              className={styles.search_icon}
+              onClick={() => {
+                setShowMenu(!ShowMenu);
+              }}
+            >
               <Image
                 src={"/Images/Icons/menu-vertical.png"}
                 width={20}
@@ -68,8 +107,9 @@ function NotesContainer({Notes, title}) {
                 setshowSidebarCopy(true);
                 setshowSidebar(true);
               }
+              setShowMenu(false);
             }}
-            style={{ cursor: "pointer", marginLeft:"8px" }}
+            style={{ cursor: "pointer", marginLeft: "8px" }}
           >
             <Image
               src={"/Images/Icons/menu-rounded.png"}
@@ -80,20 +120,31 @@ function NotesContainer({Notes, title}) {
           </div>
         </div>
         {/* Notes */}
-        <div className={styles.notes_container}>
+        <div
+          className={styles.notes_container}
+          onClick={() => {
+            setShowMenu(false);
+          }}
+        >
           {Notes.map((note) => (
-            <div className={styles.note_card} key={note.id} onClick={() => {ShowNote(note.id)}}>
+            <div
+              className={styles.note_card}
+              key={note.id}
+              onClick={() => {
+                ShowNote(note.id);
+              }}
+            >
               <NoteCard
-              id={note.id}
-              title={note.title}
-              clock={note.clock}
-              date={note.date}
-              text={note.text}
-            />
+                id={note.id}
+                title={note.title}
+                clock={note.clock}
+                date={note.date}
+                text={note.text}
+              />
             </div>
           ))}
         </div>
-        {(!showSidebarCopy && title != "Recycle bin") && (
+        {!showSidebarCopy && title != "Recycle bin" && (
           <button
             className={styles.add_btn}
             onClick={() => {

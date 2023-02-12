@@ -1,12 +1,12 @@
 .note_app_container {
-    display: flex;
-    position: relative;
+  display: flex;
+  position: relative;
 }
 
 .overflow_hidden {
-    max-height: 100vh;
-    overflow: hidden !important;
-    overflow-y: hidden !important;
+  max-height: 100vh;
+  overflow: hidden !important;
+  overflow-y: hidden !important;
 }
 
 .note_app {
@@ -73,8 +73,8 @@
   transition: all ease-in-out 5ms;
 }
 
-.note_card:hover{
-    box-shadow:  1px 1px 5px gray;
+.note_card:hover {
+  box-shadow: 1px 1px 5px gray;
 }
 
 .note_card_title {
@@ -117,12 +117,94 @@
 }
 
 .add_btn:hover {
-    filter: blur(1px);
+  filter: blur(1px);
 }
 
-.add_btn:active{
-    border: none;
-    outline: none;
+.add_btn:active {
+  border: none;
+  outline: none;
 }
 
+.menu {
+  position: absolute;
+  color: white;
+  background-color: rgb(46, 46, 46);
+  border-radius: 15px;
+  padding: 10px 15px;
+  right: 9px;
+  top: 18.5rem;
+  left: 100%;
+  bottom: 100%;
+  width: 0;
+}
 
+.opened_menu {
+  position: absolute;
+  color: white;
+  background-color: rgb(46, 46, 46);
+  border-radius: 15px;
+  padding: 10px 15px;
+  right: 9px;
+  top: 18.5rem;
+  left: 100%;
+  bottom: 100%;
+  animation-name: open_menu;
+  animation-duration: 0.1s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes open_menu {
+  0% {
+    left: 100%;
+    bottom: 100%;
+    font-size: 0.6rem;
+  }
+  20% {
+    left: 80%;
+    bottom: 80%;
+    font-size: 0.65rem;
+  }
+  40% {
+    left: 76%;
+    bottom: 79%;
+    font-size: 0.7rem;
+  }
+  60% {
+    font-size: 0.75rem;
+  }
+  80% {
+    left: 69%;
+    bottom: 78.5%;
+    font-size: 0.8rem;
+  }
+  90% {
+    font-size: 0.85rem;
+  }
+
+  100% {
+    left: auto;
+    bottom: auto;
+    font-size: 0.9rem;
+  }
+}
+
+.menu ul {
+  list-style-type: none;
+  display: flex-column;
+}
+
+.menu ul li {
+  margin: 10px 0;
+}
+
+.opened_menu ul li {
+  margin: 10px 0;
+}
+
+.opened_menu ul {
+  list-style-type: none;
+  display: flex-column;
+}
