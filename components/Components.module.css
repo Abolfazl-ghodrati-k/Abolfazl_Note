@@ -10,7 +10,7 @@
 }
 
 .sidebar_container_opened {
-    min-width: 85vw;
+  min-width: 85vw;
   animation-name: close_sidebar;
   animation-duration: 0.3s;
   animation-timing-function: linear;
@@ -21,22 +21,43 @@
 }
 
 @keyframes close_sidebar {
-    from {
-        min-width: 85vw;
-    }
-    to {
-        min-width: 0px;
-        width: 0;
-    }
+  from {
+    min-width: 85vw;
+    font-size: 1.2rem;
+  }
+  to {
+    min-width: 0px;
+    font-size: 0rem !important;
+    width: 0;
+  }
 }
 
 @keyframes open_sidebar {
-    from {
-        min-width: 0;
-    }
-    to{
-        min-width: 85vw;
-    }
+  from {
+    min-width: 0;
+    font-size: 0rem !important;
+  }
+  to {
+    min-width: 85vw;
+    font-size: 1.2rem !important;
+  }
+}
+
+@keyframes close_link {
+  from {
+    font-size: 1.2rem;
+  }
+  to {
+    font-size: 0rem !important;
+  }
+}
+@keyframes open_link {
+  from {
+    font-size: 0rem !important;
+  }
+  to {
+    font-size: 1.2rem;
+  }
 }
 
 .sidebar_wrapper {
@@ -44,13 +65,56 @@
   background-color: rgb(31, 31, 31);
   min-height: 100vh;
   border-radius: 0 20px 20px 0;
-  margin: 5px 0
+  margin: 5px 0;
+  display: flex-column;
+  justify-content: flex-start;
+  align-items: space-between;
+  padding: 5px 10px;
 }
 
-.profile{
-
+.sidebar_profile {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 15px 5px 50px;
 }
 
-.side_nav {
+.sidebar_link_container_closed {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 10px;
+  font-size: 0rem;
+  color: whitesmoke;
+  animation-name: close_link;
+  animation-duration: .2s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+.sidebar_link_container_opened {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 10px;
+  font-size:0;
+  color: whitesmoke;
+  animation-name: open_link;
+  animation-duration: .4s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
 
+.sidebar_link_title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.sidebar_link_count {
+  font-size: 0.8rem;
 }

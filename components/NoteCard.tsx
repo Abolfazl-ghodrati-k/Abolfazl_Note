@@ -10,12 +10,10 @@ function NoteCard({ text, id, title, clock, date }: Note) {
     return text?.substring(0, 100) + " ...";
   });
 
-  const ShowNote = () => {
-    Router.push(`/notes/${id}`);
-  };
+  
 
   return (
-    <div className={styles.note_card} key={id} onClick={ShowNote}>
+    <>
       {Title ? (
         <div>
           <h1 className={styles.note_card_title}>{Title}</h1>
@@ -25,7 +23,7 @@ function NoteCard({ text, id, title, clock, date }: Note) {
         <p className={styles.note_card_date}>{date}</p>
       )}
       <p className={styles.note_card_markdown}>{Text}</p>
-    </div>
+    </>
   );
 }
 
