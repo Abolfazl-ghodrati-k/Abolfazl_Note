@@ -11,7 +11,7 @@ export type NoteData = {
   title?: string;
   text: string;
   date?: string;
-  clock: string
+  clock?: string
   tags?: Tag[];
 };
 

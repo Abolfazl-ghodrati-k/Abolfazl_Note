@@ -3,6 +3,7 @@ import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
 import { User } from "./_types";
+import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
   username?: string;
@@ -11,6 +12,7 @@ export type ErrorTypo = {
 };
 
 function LoginComponent() {
+  const [pageLoading, setpageLoading] = useState(true);
   const [mode, setmode] = useState("login");
   const [errors, seterrors] = useState<ErrorTypo>();
   const [username, Setusername] = useState<string>("");
@@ -18,7 +20,7 @@ function LoginComponent() {
   const [pasRepeat, SetpasRepeat] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
   const [error, seterror] = useState<string>("");
-  const [user, setuser] = useState<User>(userService.userValue)
+  const [user, setuser] = useState<User>(userService.userValue);
 
   const Login_props = {
     username,
@@ -33,15 +35,22 @@ function LoginComponent() {
     var newMode = mode === "login" ? "signup" : "login";
     setmode(newMode);
   }
+  const register = usePwa();
+  console.log(register);
 
   useEffect(() => {
-     Setusername("")
-     Setpassword("")
-     SetpasRepeat("")
-     if(user?.token){
-      Router.push('/home')
-     }
-  },[mode])
+    Setusername("");
+    Setpassword("");
+    SetpasRepeat("");
+    if (user?.token) {
+      Router.push("/home");
+      setTimeout(() => {
+        setpageLoading(false);
+      }, 1000);
+    } else {
+      setpageLoading(false);
+    }
+  }, [mode]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -51,13 +60,13 @@ function LoginComponent() {
       if (mode == "signup") {
         const user = await userService.signup(username, password);
         setloading(false);
-        if(user.message){
-          seterror(user.message)
+        if (user.message) {
+          seterror(user.message);
           setTimeout(() => {
-            seterror("")
-          },3000)
+            seterror("");
+          }, 3000);
         } else {
-          Router.push("/home")
+          Router.push("/home");
         }
       } else if (mode == "login") {
         const user = await userService.login(username, password);
@@ -119,37 +128,41 @@ function LoginComponent() {
     return true;
   }
 
-  return (
-    <div className={`app app--is-${mode}`}>
-      <div
-        className={`form-block-wrapper form-block-wrapper--is-${mode}`}
-      ></div>
-      <section className={`form-block form-block--is-${mode}`}>
-        <header className="form-block__header">
-          <h1>{mode === "login" ? "Welcome back!" : "Sign up"}</h1>
-          <div className="form-block__toggle-block">
-            <span>
-              {mode === "login" ? "Don't" : "Already"} have an account? Click
-              here &#8594;
-            </span>
-            <input id="form-toggler" type="checkbox" onClick={toggleMode} />
-            <label htmlFor="form-toggler"></label>
-          </div>
-        </header>
-        <LoginForm
-          mode={mode}
-          onSubmit={onSubmit}
-          errors={errors}
-          Login_props={Login_props}
-          seterrors={seterrors}
-        />
-        {loading && <p>loading ...</p>}
-        {error && (
-          <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
-        )}
-      </section>
-    </div>
-  );
+  if (pageLoading) {
+    return <div>loading ...</div>;
+  } else {
+    return (
+      <div className={`app app--is-${mode}`}>
+        <div
+          className={`form-block-wrapper form-block-wrapper--is-${mode}`}
+        ></div>
+        <section className={`form-block form-block--is-${mode}`}>
+          <header className="form-block__header">
+            <h1>{mode === "login" ? "Welcome back!" : "Sign up"}</h1>
+            <div className="form-block__toggle-block">
+              <span>
+                {mode === "login" ? "Don't" : "Already"} have an account? Click
+                here &#8594;
+              </span>
+              <input id="form-toggler" type="checkbox" onClick={toggleMode} />
+              <label htmlFor="form-toggler"></label>
+            </div>
+          </header>
+          <LoginForm
+            mode={mode}
+            onSubmit={onSubmit}
+            errors={errors}
+            Login_props={Login_props}
+            seterrors={seterrors}
+          />
+          {loading && <p>loading ...</p>}
+          {error && (
+            <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
+          )}
+        </section>
+      </div>
+    );
+  }
 }
 
 export default LoginComponent;
