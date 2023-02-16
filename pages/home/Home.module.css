@@ -11,6 +11,7 @@
 
 .note_app {
   background-color: black;
+  border: none;
   color: antiquewhite;
   width: 100%;
   min-height: 100vh;

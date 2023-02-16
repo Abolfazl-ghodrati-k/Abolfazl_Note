@@ -7,6 +7,7 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   background-color: black;
+  border: none;
 }
 
 .sidebar_container_opened {
@@ -18,6 +19,7 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   background-color: black;
+  border: none;
 }
 
 @keyframes close_sidebar {
@@ -120,4 +122,3 @@
 }
 
 /* Basic editor styles */
-
