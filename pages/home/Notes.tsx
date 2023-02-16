@@ -36,13 +36,6 @@ function NotesContainer({ Notes, title }: Props) {
           : `${styles.note_app_container}`
       }
     >
-      <div className={show()}>
-        <ul>
-          <li>Share</li>
-          <li>Delete</li>
-          <li>Add to Favorites</li>
-        </ul>
-      </div>
       {showSidebar && <SideBar showSidebar={showSidebarCopy} />}
       <div className={styles.note_app}>
         {/* Title */}
@@ -93,6 +86,13 @@ function NotesContainer({ Notes, title }: Props) {
                 height={20}
                 alt="search"
               />
+              <div className={show()}>
+                <ul>
+                  <li>Share</li>
+                  <li>Delete</li>
+                  <li>Add to Favorites</li>
+                </ul>
+              </div>
             </div>
           </div>
           {/* Show side bar action handling --------------------------------------------------------------------- */}

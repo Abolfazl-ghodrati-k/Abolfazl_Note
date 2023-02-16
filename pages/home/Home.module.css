@@ -38,6 +38,7 @@
   width: 40px;
   display: grid;
   place-items: center;
+  position: relative;
 }
 
 .search_icon:hover {
@@ -126,70 +127,30 @@
 }
 
 .menu {
+  display: none;
   position: absolute;
   color: white;
   background-color: rgb(46, 46, 46);
   border-radius: 15px;
   padding: 10px 15px;
-  right: 9px;
-  top: 18.5rem;
+  right: -10px;
+  top: 0rem;
   left: 100%;
   bottom: 100%;
-  width: 0;
+  width: 0px !important;
 }
 
 .opened_menu {
   position: absolute;
+  min-width: 170px;
   color: white;
   background-color: rgb(46, 46, 46);
   border-radius: 15px;
   padding: 10px 15px;
   right: 9px;
-  top: 18.5rem;
-  left: 100%;
-  bottom: 100%;
-  animation-name: open_menu;
-  animation-duration: 0.1s;
-  animation-timing-function: linear;
-  animation-delay: 0.5ms;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
+  top: 0.7rem;
 }
 
-@keyframes open_menu {
-  0% {
-    left: 100%;
-    bottom: 100%;
-    font-size: 0.6rem;
-  }
-  20% {
-    left: 80%;
-    bottom: 80%;
-    font-size: 0.65rem;
-  }
-  40% {
-    left: 76%;
-    bottom: 79%;
-    font-size: 0.7rem;
-  }
-  60% {
-    font-size: 0.75rem;
-  }
-  80% {
-    left: 69%;
-    bottom: 78.5%;
-    font-size: 0.8rem;
-  }
-  90% {
-    font-size: 0.85rem;
-  }
-
-  100% {
-    left: auto;
-    bottom: auto;
-    font-size: 0.9rem;
-  }
-}
 
 .menu ul {
   list-style-type: none;

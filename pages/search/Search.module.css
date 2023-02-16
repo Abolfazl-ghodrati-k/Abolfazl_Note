@@ -8,19 +8,40 @@
 
 .searchbar {
   margin-top: 10px;
+  max-width: 100vw;
+  margin: 0 auto;
   padding: 10px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 15px;
+  gap: 10px;
+  animation-name: searchanime;
+  animation-duration: 0.3s;
+  animation-timing-function: linear;
+  animation-delay: 0.5ms;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes searchanime {
+  from {
+    max-width: 100vw;
+    margin-top: 0;
+  }
+  to {
+    max-width:90vw;
+    margin-top: 15px;
+  }
 }
 
 .input {
   height: 30px;
-  width: 100%;
+  max-width: 100%;
   background: transparent;
+  margin-bottom: 5px;
   border: none;
   outline: none;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: white;
 }
