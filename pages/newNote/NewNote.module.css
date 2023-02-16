@@ -1,9 +1,12 @@
 .new_note_container {
   background-color: black;
-  position: relative;
-  min-height: 100vh;
-  min-width: 100vw;
-  overflow-x: hidden
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  max-height: 100vh;
+  overflow-x: hidden;
 }
 
 .new_note_header {
@@ -50,6 +53,7 @@
 }
 
 .opened_menu {
+  z-index: 10000;
   position: absolute;
   color: white;
   background-color: rgb(46, 46, 46);
@@ -121,6 +125,8 @@
 }
 
 .note_markdown {
-    background-color: aqua;
-    min-height: 92vh;
+    /* min-height: 88vh; */
+     min-height: 80%;
+     max-height: 86%;
+     overflow-y: auto;
 }

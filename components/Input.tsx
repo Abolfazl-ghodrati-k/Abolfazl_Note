@@ -4,7 +4,7 @@ type Props = {
   id: string;
   type: string;
   label: string;
-  error: string;
+  error: string | false | undefined;
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>
 };

@@ -87,7 +87,7 @@
   font-size: 0rem;
   color: whitesmoke;
   animation-name: close_link;
-  animation-duration: .2s;
+  animation-duration: 0.2s;
   animation-timing-function: linear;
   animation-delay: 0.5ms;
   animation-iteration-count: 1;
@@ -98,10 +98,10 @@
   justify-content: space-between;
   align-items: center;
   margin: 20px 10px;
-  font-size:0;
+  font-size: 0;
   color: whitesmoke;
   animation-name: open_link;
-  animation-duration: .4s;
+  animation-duration: 0.4s;
   animation-timing-function: linear;
   animation-delay: 0.5ms;
   animation-iteration-count: 1;
@@ -118,3 +118,6 @@
 .sidebar_link_count {
   font-size: 0.8rem;
 }
+
+/* Basic editor styles */
+

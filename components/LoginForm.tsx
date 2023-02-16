@@ -5,7 +5,7 @@ import { ErrorTypo } from "../pages";
 type Props = {
   mode: string;
   onSubmit: (e: FormEvent) => void;
-  errors: ErrorTypo;
+  errors: ErrorTypo | undefined;
   Login_props: {
     username: string;
     Setusername: React.Dispatch<React.SetStateAction<string>>;
@@ -14,7 +14,7 @@ type Props = {
     pasRepeat: string;
     SetpasRepeat: React.Dispatch<React.SetStateAction<string>>;
   };
-  seterrors: React.Dispatch<React.SetStateAction<ErrorTypo>>;
+  seterrors: React.Dispatch<React.SetStateAction<ErrorTypo | undefined>>;
 };
 
 function LoginForm({ mode, onSubmit, errors, Login_props, seterrors }: Props) {
