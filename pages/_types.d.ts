@@ -12,7 +12,6 @@ export type NoteData = {
   text: string;
   date?: string;
   clock?: string
-  tags?: Tag[];
 };
 
 // export type Tag = {

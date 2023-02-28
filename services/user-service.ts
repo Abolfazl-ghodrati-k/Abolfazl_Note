@@ -8,7 +8,7 @@ import { User } from "../pages/_types";
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `${publicRuntimeConfig.apiUrl}/auth`;
 const userSubject = new BehaviorSubject(
-  process.browser && JSON.parse(localStorage.getItem("user"))
+  process.browser && JSON.parse(localStorage.getItem("user")!)
 );
 
 export const userService = {

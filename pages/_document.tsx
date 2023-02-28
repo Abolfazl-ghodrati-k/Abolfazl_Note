@@ -8,7 +8,7 @@ export default function Document() {
       <Head>
         <link rel="webmanifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon.png"></link>
-        
+        <script src="http://172.30.112.1:8097"></script>
         <meta name="theme-color" content="#3544f6" />
       </Head>
       <body>

@@ -126,7 +126,7 @@ function NotesContainer({ Notes, title }: Props) {
             setShowMenu(false);
           }}
         >
-          {Notes.map((note) => (
+          {Notes?.map((note) => (
             <div
               className={styles.note_card}
               key={note.id}
