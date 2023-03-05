@@ -51,11 +51,6 @@ function Note({ note, id }: Props) {
 
   const online = useStatus();
 
-  useEffect(() => {
-    console.log("mounted")
-    return () => console.log("unmounted");
-  });
-
   function show() {
     if (showMenu) {
       return styles.opened_menu;

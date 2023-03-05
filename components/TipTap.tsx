@@ -9,6 +9,13 @@ import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import TextStyle from "@tiptap/extension-text-style";
+import Highlight from "@tiptap/extension-highlight";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import CodeBlock from "@tiptap/extension-code-block";
+import BulletList from "@tiptap/extension-bullet-list";
+import ListItem from "@tiptap/extension-list-item";
+import History from "@tiptap/extension-history";
 import React, { useCallback, useEffect, useState } from "react";
 import MenuBar from "./Menubar";
 import { Note } from "../pages/_types";
@@ -24,8 +31,27 @@ type Props = {
 
 export default function TipTap({ id, Id, setId, markdown }: Props) {
   const editor = useEditor({
-    extensions: [Document, Paragraph, Text, TextStyle, Color],
-    content: `${markdown??""}`,
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      TextStyle,
+      Color,
+      Highlight.configure({ multicolor: true }),
+      Bold,
+      CodeBlock,
+      Italic,
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "my-custom-class",
+        },
+      }),
+      ListItem,
+      History.configure({
+        depth: 10,
+      })
+    ],
+    content: `${markdown ?? ""}`,
     editorProps: {
       attributes: {
         class:
@@ -49,7 +75,7 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
     if (id) {
       const UpdatedNotes = Notes?.map((note) => {
         if (note.id == id) {
-            (note.text = json?.length > 7 ? json : Markdown),
+          (note.text = json?.length > 7 ? json : Markdown),
             (note.clock = clock),
             (note.date = date);
         }
@@ -87,7 +113,7 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
   return (
     <div>
       <MenuBar editor={editor} />
-      {/* {editor && (
+      {editor && (
         <BubbleMenu
           className="bubble-menu"
           tippyOptions={{ duration: 100 }}
@@ -105,14 +131,8 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
           >
             Italic
           </button>
-          <button
-            onClick={() => editor.chain().focus()?.toggleStrike().run()}
-            className={editor.isActive("strike") ? "is-active" : ""}
-          >
-            Strike
-          </button>
         </BubbleMenu>
-      )}  */}
+      )}
 
       <EditorContent editor={editor} spellCheck={false} />
     </div>

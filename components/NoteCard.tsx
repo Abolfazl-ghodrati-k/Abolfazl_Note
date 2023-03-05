@@ -9,6 +9,8 @@ import Text from "@tiptap/extension-text";
 import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import useIsToday from "../hooks/useIsToday";
+import BulletList from "@tiptap/extension-bullet-list";
+import ListItem from "@tiptap/extension-list-item";
 
 function NoteCard({ text, id, title, clock, date }: Note) {
   const [Title, setTitle] = useState(title);
@@ -16,15 +18,23 @@ function NoteCard({ text, id, title, clock, date }: Note) {
   const [TEXT, setTEXT] = useState(() => {
     if (text?.length > 100) {
       return text?.substring(0, 100) + " ...";
-    }else {
-      return text
+    } else {
+      return text;
     }
   });
   const editor = useEditor({
-    extensions: [Document, Paragraph, Text, TextStyle, Color],
-    content: `${TEXT??""}`,
+    extensions: [
+      Document,
+      Paragraph,
+      Text,
+      TextStyle,
+      Color,
+      BulletList.configure({ HTMLAttributes: { class: "my-custom-class" } }),
+      ListItem,
+    ],
+    content: `${TEXT ?? ""}`,
   });
-  const isToday = useIsToday()
+  const isToday = useIsToday();
 
   return (
     <>

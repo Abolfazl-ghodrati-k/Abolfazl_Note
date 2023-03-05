@@ -335,7 +335,7 @@ input[type="checkbox"] {
     position: relative;
     top: 51px;
   }
-  .editor{
+  .editor {
     margin-top: 52px;
   }
 }
@@ -354,9 +354,18 @@ input[type="checkbox"] {
   right: 0;
   z-index: 1000;
   button {
-    all: unset;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: rgb(48, 48, 48);
+    outline: none;
+    border: none;
+    max-height: 40px;
     display: grid;
     place-items: center;
+    &:hover{
+      background-color: #707070;
+    }
   }
 }
 
@@ -474,6 +483,16 @@ input[type="checkbox"] {
     &:hover,
     &.is-active {
       opacity: 1;
+    }
+  }
+}
+
+.my-custom-class {
+  list-style-type: inherit;
+  li {
+    color: blue;
+    p {
+      color: white;
     }
   }
 }
