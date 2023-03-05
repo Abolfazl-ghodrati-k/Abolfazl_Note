@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import styles from "./Home.module.css";
+import styles from "../pages/home/Home.module.css";
 import Image from "next/image";
-import NoteCard from "../../components/NoteCard";
+import NoteCard from "./NoteCard";
 import Router from "next/router";
-import SideBar from "../../components/SideBar";
-import { Note } from "../_types";
+import SideBar from "./SideBar";
+import { Note } from "../pages/_types";
 import { AiOutlineDelete, AiOutlineStar } from "react-icons/ai";
 import { MdOutlineRestoreFromTrash } from "react-icons/md";
 
@@ -98,6 +98,8 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     }
   }
 
+  console.log(Notes.length)
+
   return (
     <div
       className={
@@ -119,9 +121,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           <small>
             {Notes.length > 0
               ? Notes.length == 1
-                ? Notes.length + title == "Recycle bin"
-                  ? "deleted"
-                  : "" + " note"
+                ? Notes.length + (title === "Recycle bin" ? " deleted": "") + " note"
                 : Notes.length +
                   (title == "Recycle bin" ? " deleted" : "") +
                   " notes"
@@ -302,7 +302,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
               +
             </button>
           ))}
-        {title == "Recycle bin" && (
+        {title == "Recycle bin" && Notes.length > 0 && (
           <button
             className={styles.delete_btn}
             style={{ backgroundColor: "greenyellow" }}

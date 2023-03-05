@@ -1,6 +1,8 @@
 import React, { FormEvent, useEffect } from "react";
 import Input from "./Input";
 import { ErrorTypo } from "../pages";
+import Router from "next/router";
+import { userService } from "../services/user-service";
 
 type Props = {
   mode: string;
@@ -18,6 +20,11 @@ type Props = {
 };
 
 function LoginForm({ mode, onSubmit, errors, Login_props, seterrors }: Props) {
+
+  function enterAsGuest() {
+    userService.asGuest()
+    Router.push('/home')
+  }
 
   return (
     <form onSubmit={onSubmit}>
@@ -75,9 +82,10 @@ function LoginForm({ mode, onSubmit, errors, Login_props, seterrors }: Props) {
       </button>
       {mode === "login" ? (
         <button
+          onClick={enterAsGuest}
           className="button button--secondary full-width"
           style={{ marginTop: "0.7rem", fontSize: ".8rem" }}
-          type="submit"
+          type="button"
         >
           Enter As Guest...
         </button>

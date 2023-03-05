@@ -9,7 +9,7 @@ import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import useIsToday from "../hooks/useIsToday";
 import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
+import ListItem from "@tiptap/extension-list-item"
 
 type NoteCardProps = {
   selectedNotes: Note[] | undefined;

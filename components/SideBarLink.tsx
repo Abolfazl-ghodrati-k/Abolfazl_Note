@@ -8,7 +8,7 @@ type Props = {
   value: string;
   count: string;
   showSidebar: boolean;
-  path: string;
+  path: string
 };
 
 function SideBarLink({ icon, value, count, showSidebar, path }: Props) {

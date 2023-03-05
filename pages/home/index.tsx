@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NotesContainer from "./Notes";
+import NotesContainer from "../../components/Notes";
 import { Note } from "../_types";
 
 function index() {
@@ -16,4 +16,6 @@ function index() {
   return <NotesContainer title="All Notes" Notes={Notes ?? []} setNotes={setNotes} />;
 }
 
-export default index;
+index.auth = true
+
+export default index

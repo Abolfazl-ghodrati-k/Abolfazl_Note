@@ -2,8 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
 import { userService } from "../services/user-service";
-import Router from "next/router";
-import { SimplifiedNote, User } from "../pages/_types";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -17,7 +15,7 @@ export const fetchWrapper = {
 async function get(url: string) {
   const requestOptions = {
     method: "GET",
-    headers: authHeader(url),
+    headers: authHeader(url) as HeadersInit | undefined,
   };
   if (url == `${publicRuntimeConfig.apiUrl}/auth`) {
     return fetch(url, requestOptions).then(handleResponse);
@@ -29,7 +27,7 @@ async function get(url: string) {
 async function post(url: string, body: {} | string) {
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeader(url) },
+    headers: { "Content-Type": "application/json", ...authHeader(url) as HeadersInit | undefined },
     credentials: "include" as RequestCredentials,
     body: JSON.stringify(body),
   };
@@ -39,7 +37,7 @@ async function post(url: string, body: {} | string) {
 async function put(url: string, body: {} | string) {
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeader(url) },
+    headers: { "Content-Type": "application/json", ...authHeader(url) as HeadersInit | undefined },
     body: JSON.stringify(body),
   };
   return fetch(url, requestOptions).then(handleResponse);
@@ -49,7 +47,7 @@ async function put(url: string, body: {} | string) {
 async function _delete(url: string) {
   const requestOptions = {
     method: "DELETE",
-    headers: authHeader(url),
+    headers: authHeader(url) as HeadersInit | undefined,
   };
   return fetch(url, requestOptions).then(handleResponse);
 }
@@ -74,7 +72,7 @@ function handleAuth(response: any) {
 
 function handleResponse(response: any) {
 //   return response;
-  return response.text().then(text => {
+  return response.text().then((text: string) => {
       const data = text && JSON.parse(text);
 
       if (!response.ok) {

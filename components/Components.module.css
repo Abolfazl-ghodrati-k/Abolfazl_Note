@@ -76,9 +76,18 @@
 
 .sidebar_profile {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin: 15px 5px 50px;
+}
+
+.sidebar_profile h2 {
+  color: orange;
+}
+
+.sidebar_profile div {
+  padding: 5px 10px;
+  border-radius: 15px;
 }
 
 .sidebar_link_container_closed {
@@ -119,6 +128,36 @@
 
 .sidebar_link_count {
   font-size: 0.8rem;
+}
+
+.control_pannel {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  padding: 15px;
+  font-size: 1rem;
+}
+
+.functions {
+  gap: 20px !important;
+}
+
+.functions {
+  font-size: 1.1rem !important;
+  background-color: transparent;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  transition: all .5s ease-in-out;
+}
+
+.functions:hover {
+  background-color: brown;
 }
 
 /* Basic editor styles */

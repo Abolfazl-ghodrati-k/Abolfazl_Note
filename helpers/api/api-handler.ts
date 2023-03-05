@@ -1,5 +1,6 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { errorHandler, jwtMiddleware } from "./index";
+import { Error } from "./error-handler";
 
 export default apiHandler;
 
@@ -13,7 +14,10 @@ function apiHandler(handler: NextApiHandler) {
 			await handler(req, res);
 		} catch (err) {
 			// global error handler
-			errorHandler(err, res);
+			if(err){
+
+				errorHandler(err as Error, res);
+			}
 		}
 	};
 }

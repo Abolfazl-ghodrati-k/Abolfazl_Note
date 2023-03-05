@@ -32,21 +32,19 @@ function LoginComponent() {
   };
 
   function toggleMode() {
-    var newMode = mode === "login" ? "signup" : "login";
+    var newMode = mode == "login" ? "signup" : "login";
     setmode(newMode);
   }
   const register = usePwa();
   console.log(register);
 
   useEffect(() => {
+    console.log(mode)
     Setusername("");
     Setpassword("");
     SetpasRepeat("");
     if (user?.token) {
       Router.push("/home");
-      setTimeout(() => {
-        setpageLoading(false);
-      }, 1000);
     } else {
       setpageLoading(false);
     }
@@ -55,6 +53,7 @@ function LoginComponent() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const isValid = Validation(username, password);
+    console.log(isValid)
     if (isValid) {
       setloading(true);
       if (mode == "signup") {
@@ -68,7 +67,8 @@ function LoginComponent() {
         } else {
           Router.push("/home");
         }
-      } else if (mode == "login") {
+      } else {
+        console.log("login")
         const user = await userService.login(username, password);
         setloading(false);
         if (user.token) {
@@ -80,8 +80,6 @@ function LoginComponent() {
           }, 3000);
         }
       }
-    } else {
-      return;
     }
   }
 
@@ -120,7 +118,7 @@ function LoginComponent() {
       seterrors({ password: "password must be at least 8 chars" });
       return false;
     }
-    if (password != pasRepeat) {
+    if (mode == "signup" && password != pasRepeat) {
       seterrors({ pasRepeat: "Entered Passwords Dont match!" });
       return false;
     }

@@ -46,6 +46,7 @@ import { ToastContainer } from "react-toastify";
 
 import type { NextComponentType } from "next"; //Import Component type
 import { observer } from "mobx-react-lite";
+import { User } from "./_types";
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
@@ -104,22 +105,37 @@ const App = observer(({ Component, pageProps }: CustomAppProps) => {
 
 export default App;
 
-function AuthControll({ children }) {
+type Props = {
+  children: React.ReactNode;
+};
+
+const AuthControll = ({ children }: Props) => {
   const [loading, setloading] = useState(true);
   const [res, setres] = useState<any>();
 
   useEffect(() => {
-    userService.getAll().then((response) => {
+    const user = JSON.parse(localStorage.getItem("user")!) as User;
+    if (user?.guest) {
       setloading(false);
-      console.log(response);
-      setres(response);
-    }) as unknown as any;
+      setres(user);
+    } else if (!user?.guest) {
+      userService.getAll().then((response) => {
+        setloading(false);
+        console.log(response);
+        setres(response);
+      }) as unknown as any;
+    } else {
+      setloading(false);
+    }
   }, []);
   if (loading) {
     return <div>loading... please wait</div>;
-  } else if (res.message.username) {
+  } else if (res?.user?.guest) {
+    return <>{children}</>;
+  } else if (res?.message?.username) {
     return <>{children}</>;
   } else {
     userService.logout();
+    return null;
   }
-}
+};

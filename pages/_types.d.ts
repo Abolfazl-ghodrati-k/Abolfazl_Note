@@ -30,8 +30,9 @@ export type NoteData = {
 // };
 
 export interface User {
-  firstName: string;
-  lastName: string;
+  guest: boolean;
+  firstName?: string;
+  lastName?: string;
   username: string;
   token: string;
 };

@@ -2,7 +2,7 @@ import { NextApiResponse } from "next";
 
 export default errorHandler;
 
-type Error = {
+export type Error = {
 	name: string;
 	message: string;
 };

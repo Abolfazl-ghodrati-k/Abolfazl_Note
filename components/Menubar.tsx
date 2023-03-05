@@ -7,7 +7,7 @@ import { AiOutlineUnorderedList } from "react-icons/ai";
 import { BiUndo, BiRedo } from "react-icons/bi";
 
 type MenuProps = {
-  editor: Editor;
+  editor: Editor
 };
 
 const MenuBar = ({ editor }: MenuProps) => {

@@ -42,7 +42,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // // create a jwt token that is valid for 7 days
     if (isSamePass) {
-      const token = await jwt.sign(
+      const token = jwt.sign(
         {
           username: req.body.username,
           firstName: user.firstName,
@@ -58,7 +58,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
         username: user.username,
         firstName: user?.firstName,
         lastName: user?.lastName,
-        token,
+        token: token,
       });
     } else {
       return res.status(200).json({

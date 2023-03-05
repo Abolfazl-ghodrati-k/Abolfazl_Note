@@ -8,7 +8,7 @@ import useStatus from "../hooks/useStatus";
 import { v4 as uuid } from "uuid";
 
 type Props = {
-  note?: Note;
+  note?: Note
   id?: string;
   redirect: string;
 };

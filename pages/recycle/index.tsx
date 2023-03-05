@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import NotesContainer from '../home/Notes'
+import NotesContainer from '../../components/Notes'
 import { Note } from '../_types'
 
 function index() {

@@ -2,23 +2,31 @@ import React, { useEffect, useState } from "react";
 import styles from "./Components.module.css";
 import SideBarLink from "./SideBarLink";
 import Image from "next/image";
+import { User } from "../pages/_types";
+import Router from "next/router";
+import { FcSynchronize } from "react-icons/fc";
+import { CgProfile } from "react-icons/cg";
+import Link from "next/link"
+
 
 type Props = {
   showSidebar: boolean;
 };
 
 function SideBar({ showSidebar }: Props) {
-
-  const [storedNotesCount, setstoredNotesCount] = useState("")
-  const [deletedNotesCount, setdeletedNotesCount] = useState("")
+  const [storedNotesCount, setstoredNotesCount] = useState("");
+  const [deletedNotesCount, setdeletedNotesCount] = useState("");
+  const [User, setUser] = useState<User>();
 
   useEffect(() => {
-    const Notes = JSON.parse(localStorage.getItem("NOTES")!)
-    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!)
+    const Notes = JSON.parse(localStorage.getItem("NOTES")!);
+    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
+    const user = JSON.parse(localStorage.getItem("user")!);
 
-    setstoredNotesCount(Notes?.length)
-    setdeletedNotesCount(deletedNotes?.length)
-  },[])
+    setstoredNotesCount(Notes?.length);
+    setdeletedNotesCount(deletedNotes?.length);
+    setUser(user as User);
+  }, []);
 
   return (
     <div
@@ -30,10 +38,46 @@ function SideBar({ showSidebar }: Props) {
     >
       <div className={styles.sidebar_wrapper}>
         <div className={styles.sidebar_profile}>
-          <Image src="/Images/Icons/person.png" width={30} height={30} alt="person"/>
+          <h2>{User?.username}</h2>
+          <div>
+            <Image
+              src="/Images/Icons/person.png"
+              width={30}
+              height={30}
+              alt="person"
+            />
+          </div>
         </div>
-        <SideBarLink path="/home" showSidebar={showSidebar} value="All notes" icon="/Images/Icons/notes.png" count={storedNotesCount} />
-        <SideBarLink path="/recycle" showSidebar={showSidebar} value="Recycle bin" icon="/Images/Icons/recycle.png" count={deletedNotesCount} />
+        <SideBarLink
+          path="/home"
+          showSidebar={showSidebar}
+          value="All notes"
+          icon="/Images/Icons/notes.png"
+          count={storedNotesCount}
+        />
+        <SideBarLink
+          path="/recycle"
+          showSidebar={showSidebar}
+          value="Recycle bin"
+          icon="/Images/Icons/recycle.png"
+          count={deletedNotesCount}
+        />
+        <hr />
+        {User?.guest ? (
+          <div className={styles.control_pannel}>
+            <CgProfile size={25} color="white" />
+            <Link href={'/'} style={{color: "white"}}>
+              Create Account for Free or SignIn
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <button className={`${styles.control_pannel} ${styles.functions}`}>
+              <FcSynchronize size={25} color="white" />
+              <div>Sync Notes</div>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
