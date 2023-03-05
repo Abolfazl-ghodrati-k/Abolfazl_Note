@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../pages/home/Home.module.css";
 import { Note } from "../pages/_types";
-import Router from "next/router";
 import { useEditor, EditorContent } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -12,7 +11,21 @@ import useIsToday from "../hooks/useIsToday";
 import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item";
 
-function NoteCard({ text, id, title, clock, date }: Note) {
+type NoteCardProps = {
+  selectedNotes: Note[] | undefined;
+  onSelecting: boolean;
+} & Note;
+
+function NoteCard({
+  text,
+  id,
+  title,
+  clock,
+  date,
+  selectedNotes,
+  onSelecting,
+}: NoteCardProps) {
+  const [selected, setselected] = useState<boolean>();
   const [Title, setTitle] = useState(title);
   const [Clock, setClock] = useState(clock);
   const [TEXT, setTEXT] = useState(() => {
@@ -36,8 +49,24 @@ function NoteCard({ text, id, title, clock, date }: Note) {
   });
   const isToday = useIsToday();
 
+  useEffect(() => {
+    console.log(selectedNotes)
+    setselected(() =>
+      selectedNotes?.find((note) => note.id == id) ? true : false
+    );
+  },[selectedNotes]);
+
+  function isSelected() {
+    if (selected) {
+      return styles.checked_check_box;
+    } else {
+      return styles.check_box;
+    }
+  }
+
   return (
-    <>
+    <div className={styles.note_card_container}>
+      {onSelecting && <div className={isSelected()}></div>}
       {Title ? (
         <div>
           <h1 className={styles.note_card_title}>{Title}</h1>
@@ -46,10 +75,10 @@ function NoteCard({ text, id, title, clock, date }: Note) {
       ) : (
         <p className={styles.note_card_date}>{date}</p>
       )}
-      <p className={styles.note_card_markdown}>
+      <div className={styles.note_card_markdown}>
         <EditorContent editor={editor} />
-      </p>
-    </>
+      </div>
+    </div>
   );
 }
 

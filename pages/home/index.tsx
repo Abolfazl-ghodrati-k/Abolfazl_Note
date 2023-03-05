@@ -13,7 +13,7 @@ function index() {
     }
   }, []);
 
-  return <NotesContainer title="All Notes" Notes={Notes ?? []} />;
+  return <NotesContainer title="All Notes" Notes={Notes ?? []} setNotes={setNotes} />;
 }
 
 export default index;
