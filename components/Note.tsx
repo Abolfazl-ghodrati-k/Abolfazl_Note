@@ -52,7 +52,8 @@ function Note({ note, id }: Props) {
   const online = useStatus();
 
   useEffect(() => {
-    // return () => localStorage.removeItem("CURRENTID");
+    console.log("mounted")
+    return () => console.log("unmounted");
   });
 
   function show() {
@@ -130,6 +131,7 @@ function Note({ note, id }: Props) {
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
+              localStorage.removeItem("CURRENTID")
               Router.push("/home");
             }}
           >

@@ -20,7 +20,8 @@ const MenuBar = ({ editor }: MenuProps) => {
           .setColor(editor!.getAttributes("textStyle").color)
           .run()
       : editor.chain().focus().setColor("#ffffff").run();
-  }, []);
+  }, [editor]);
+  
   return (
     <div className="menubar">
       <input

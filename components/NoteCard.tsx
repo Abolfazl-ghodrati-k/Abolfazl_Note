@@ -8,6 +8,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
+import useIsToday from "../hooks/useIsToday";
 
 function NoteCard({ text, id, title, clock, date }: Note) {
   const [Title, setTitle] = useState(title);
@@ -21,8 +22,9 @@ function NoteCard({ text, id, title, clock, date }: Note) {
   });
   const editor = useEditor({
     extensions: [Document, Paragraph, Text, TextStyle, Color],
-    content: `${TEXT}`,
+    content: `${TEXT??""}`,
   });
+  const isToday = useIsToday()
 
   return (
     <>

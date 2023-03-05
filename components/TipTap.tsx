@@ -36,41 +36,6 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
 
   const json = editor?.getHTML()!;
 
-  // useEffect(() => {
-  //   const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
-  //   const Markdown = Notes?.find(
-  //     (note) => note.id == Id || note.id == id
-  //   )!.text;
-  //   console.log(Markdown);
-  //   setTimeout(() => {
-  //     !editor?.isDestroyed &&
-  //       editor?.commands?.setContent(
-  //         `<p><span style="color: #ffffff">aaaaa</span></p>`
-  //       );
-  //   }, 1000);
-  // }, []);
-
-  useEffect(() => {
-    const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
-    const Markdown = Notes?.find(
-      (note) => note.id == Id || note.id == id
-    )!.text;
-    console.log("markdown", Markdown);
-    console.log("proped markdown", markdown)
-  }, []);
-
-  // useEffect(() => {
-  //   const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
-  //   const Markdown = Notes?.find(
-  //     (note) => note.id == Id || note.id == id
-  //   )!.text;
-  //   // if (json?.length > 7) {
-  //   //   setmarkdown(json);
-  //   // } else {
-  //   //   setmarkdown(Markdown);
-  //   // }
-  // }, [json]);
-
   useEffect(() => {
     saveContent(id, Id);
   }, [json, Id, id]);
@@ -79,7 +44,7 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
     const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
     const Markdown = Notes?.find(
       (note) => note.id == Id || note.id == id
-    )!.text;
+    )!?.text;
     const { date, clock } = getDate();
     if (id) {
       const UpdatedNotes = Notes?.map((note) => {

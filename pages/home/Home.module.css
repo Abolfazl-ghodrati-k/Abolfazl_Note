@@ -95,7 +95,7 @@
   font-size: 0.8rem;
   margin-top: 10px;
   overflow: hidden;
-  width: 150px;
+  max-width: 150px;
   /* white-space: nowrap; */
   max-height: 100px;
   /* line-height: 2.5rem; */
