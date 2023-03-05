@@ -20,6 +20,7 @@ function SideBarLink({ icon, value, count, showSidebar, path }: Props) {
           ? styles.sidebar_link_container_opened
           : styles.sidebar_link_container_closed
       }
+      style={{cursor:"pointer"}}
       onClick={() => {
         Router.push(path);
       }}

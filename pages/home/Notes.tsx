@@ -23,7 +23,12 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   const [selectedNotes, setselectedNotes] = useState<Note[]>([]);
 
   const ShowNote = (id: string) => {
-    Router.push(`/notes/${id}`);
+    Router.push({
+      pathname: `/notes/${id}`,
+      query: {
+        redirect: Router.asPath
+      }
+    });
   };
 
   function show() {
@@ -50,7 +55,11 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
       ({ id: id1 }) => !selectedNotes.some(({ id: id2 }) => id1 == id2)
     );
     setNotes(updatedNotes);
-    localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
+    if (title == "Recycle bin") {
+      localStorage.setItem("DELETED_NOTES", JSON.stringify(updatedNotes))
+    } else {
+      localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
+    }
   }
 
   function deleteNotes() {
@@ -69,6 +78,23 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
       removeFromNotes();
       var deletedNotes = [...selectedNotes];
       localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
+    }
+  }
+
+  function restoreNotes() {
+    setonDelete(false);
+    const StoredNotes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+    if (selectedNotes.length == 0) {
+      return;
+    }
+    if (StoredNotes && StoredNotes.length > 0) {
+      removeFromNotes();
+      var StoredNotesCopy = [...StoredNotes, ...selectedNotes];
+      localStorage.setItem("NOTES", JSON.stringify(StoredNotesCopy));
+    } else {
+      removeFromNotes();
+      var restoredNotes = [...selectedNotes];
+      localStorage.setItem("NOTES", JSON.stringify(restoredNotes));
     }
   }
 
@@ -279,9 +305,9 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
         {title == "Recycle bin" && (
           <button
             className={styles.delete_btn}
-            style={{backgroundColor: "greenyellow"}}
+            style={{ backgroundColor: "greenyellow" }}
             onClick={() => {
-              deleteNotes();
+              restoreNotes();
             }}
           >
             <MdOutlineRestoreFromTrash size={30} color="black" />

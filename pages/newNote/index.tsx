@@ -3,7 +3,7 @@ import Note from "../../components/Note";
 
 function index() {
   return (
-    <Note />
+    <Note redirect="/home" />
   );
 }
 

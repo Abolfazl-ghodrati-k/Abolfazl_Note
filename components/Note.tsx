@@ -10,10 +10,12 @@ import { v4 as uuid } from "uuid";
 type Props = {
   note?: Note;
   id?: string;
+  redirect: string;
 };
 
-function Note({ note, id }: Props) {
+function Note({ note, id, redirect }: Props) {
   const [showMenu, setshowMenu] = useState(false);
+  console.log(redirect);
 
   const [Id, setId] = useState(() => {
     if (typeof window !== "undefined") {
@@ -26,7 +28,12 @@ function Note({ note, id }: Props) {
 
   const [StoredNote, setNote] = useState(() => {
     if (typeof window !== "undefined") {
-      const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+      var Notes = [] as Note[];
+      if (redirect == "/recycle") {
+        Notes = JSON.parse(localStorage.getItem("DELETED_NOTES")!) as Note[];
+      } else {
+        Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+      }
       if (id) {
         return Notes.find((note) => note.id == id);
       } else {
@@ -37,7 +44,12 @@ function Note({ note, id }: Props) {
 
   const [title, settitle] = useState(() => {
     if (typeof window !== "undefined") {
-      const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+      var Notes = [] as Note[];
+      if (redirect == "/recycle") {
+        Notes = JSON.parse(localStorage.getItem("DELETED_NOTES")!) as Note[];
+      } else {
+        Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+      }
       if (Notes) {
         if (id) {
           return Notes.find((note) => note.id == id)?.title;
@@ -126,8 +138,8 @@ function Note({ note, id }: Props) {
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
-              localStorage.removeItem("CURRENTID")
-              Router.push("/home");
+              localStorage.removeItem("CURRENTID");
+              Router.push(`${redirect}`);
             }}
           >
             <Image
@@ -164,7 +176,7 @@ function Note({ note, id }: Props) {
           setshowMenu(false);
         }}
       >
-        <TipTap id={id} Id={Id} setId={setId} markdown={StoredNote?.text}/>
+        <TipTap id={id} Id={Id} setId={setId} markdown={StoredNote?.text} />
       </div>
     </div>
   );
