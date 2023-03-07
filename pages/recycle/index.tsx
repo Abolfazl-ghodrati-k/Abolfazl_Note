@@ -18,4 +18,6 @@ function index() {
   )
 }
 
+index.auth = true
+
 export default index

@@ -6,24 +6,12 @@ import User, { IUser } from "../../models/User";
 import { UpdateQuery } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import getConfig from "next/config";
-import Cors from 'cors'
 
 const { serverRuntimeConfig } = getConfig();
 
-const cors = Cors({
-  methods: ["POST", "GET", "HEAD"],
-});
 
-export function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: { (req: Cors.CorsRequest, res: { statusCode?: number | undefined; setHeader(key: string, value: string): any; end(): any; }, next: (err?: any) => any): void; (arg0: any, arg1: any, arg2: (result: any) => void): void; }) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
-      return resolve(result);
-    });
-  });
-}
+
+
 
 
 export default apiHandler(handler);
@@ -37,7 +25,6 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   async function saveNote() {
-    runMiddleware(req,res,cors)
     try {
       await db.connect();
     } catch (error) {

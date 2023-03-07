@@ -16,6 +16,6 @@ function index() {
   return <NotesContainer title="All Notes" Notes={Notes ?? []} setNotes={setNotes} />;
 }
 
-// index.auth = true
+index.auth = true
 
 export default index

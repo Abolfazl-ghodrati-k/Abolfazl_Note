@@ -33,7 +33,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
   async function syncData() {
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
-    const res = await fetchWrapper.post(process.env.apiUrl + "/sync", {
+    const res = await fetchWrapper.post("/api/sync", {
       Notes,
       deletedNotes,
       username: userService.userValue.username,

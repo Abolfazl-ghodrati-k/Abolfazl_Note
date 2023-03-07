@@ -8,4 +8,6 @@ function index() {
   return <Note id={router.query.id as string} redirect={router.query.redirect as string}/>;
 }
 
+index.auth = true
+
 export default index;

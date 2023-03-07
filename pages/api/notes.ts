@@ -6,15 +6,10 @@ import User, { IUser } from "../../models/User";
 import { UpdateQuery } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import getConfig from "next/config";
-import Cors from "cors";
-import { runMiddleware } from "./sync";
 const { serverRuntimeConfig } = getConfig();
 
 export default apiHandler(handler);
 
-const cors = Cors({
-  methods: ["POST", "GET", "HEAD"],
-});
 
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -26,7 +21,6 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   async function recieveNotes() {
-    runMiddleware(req,res,cors)
     try {
       await db.connect();
     } catch (error) {

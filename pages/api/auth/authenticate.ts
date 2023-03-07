@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { apiHandler } from "../../../helpers/api";
 
 const { serverRuntimeConfig } = getConfig();
+
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";
