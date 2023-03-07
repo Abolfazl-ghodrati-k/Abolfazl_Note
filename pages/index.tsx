@@ -3,6 +3,7 @@ import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
 import { User } from "./_types";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
 // import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
@@ -35,8 +36,6 @@ function LoginComponent() {
     var newMode = mode == "login" ? "signup" : "login";
     setmode(newMode);
   }
-  // const register = usePwa();
-  // console.log(register);
 
   useEffect(() => {
     console.log(mode)
@@ -68,10 +67,12 @@ function LoginComponent() {
           Router.push("/home");
         }
       } else {
-        console.log("login")
         const user = await userService.login(username, password);
         setloading(false);
         if (user.token) {
+          const {savedNotes,deletedNotes} = await recieveNotes()
+          localStorage.setItem("NOTES", JSON.stringify(savedNotes))
+          localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes))
           Router.push("/home");
         } else {
           seterror(user.message);
@@ -81,6 +82,13 @@ function LoginComponent() {
         }
       }
     }
+  }
+
+  async function recieveNotes() {
+    const notes = await fetchWrapper.get('/api/notes')
+    const savedNotes = notes[0].Notes
+    const deletedNotes = notes[0].deletedNotes
+    return {savedNotes,deletedNotes}
   }
 
   function Validation(username: string, password: string) {

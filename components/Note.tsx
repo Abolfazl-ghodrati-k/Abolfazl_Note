@@ -137,8 +137,18 @@ function Note({ note, id, redirect }: Props) {
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
-              localStorage.removeItem("CURRENTID");
-              Router.push(`${redirect}`);
+              const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[]
+              const note = Notes.find(n => (n.id == id)||(n.id == Id) )
+              if(note?.title || note?.text){
+                Router.push(`${redirect}`);
+                localStorage.removeItem("CURRENTID");
+                return
+              } else {
+                const updatedNotes = Notes.filter(n => (id && n.id != id) || (Id && n.id != Id))
+                localStorage.setItem("NOTES", JSON.stringify(updatedNotes))
+                localStorage.removeItem("CURRENTID");
+                Router.push(`${redirect}`);
+              }
             }}
           >
             <Image

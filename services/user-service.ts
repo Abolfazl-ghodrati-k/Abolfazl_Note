@@ -6,7 +6,7 @@ import {v4 as uuid} from "uuid"
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 
 const { publicRuntimeConfig } = getConfig();
-const baseUrl = `${publicRuntimeConfig.apiUrl}/auth`;
+const baseUrl = `/api/auth`;
 const userSubject = new BehaviorSubject(
   process.browser && JSON.parse(localStorage.getItem("user")!)
 );
@@ -24,7 +24,7 @@ export const userService = {
 };
 
 async function login(username: string, password: string) {
-  const user = await fetchWrapper.post(`${baseUrl}/authenticate`, {
+  const user = await fetchWrapper.post(`/api/auth/authenticate`, {
     username,
     password,
   });

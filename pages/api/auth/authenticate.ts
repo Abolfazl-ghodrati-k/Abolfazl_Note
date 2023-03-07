@@ -5,9 +5,6 @@ import bcrypt from "bcryptjs";
 import { apiHandler } from "../../../helpers/api";
 
 const { serverRuntimeConfig } = getConfig();
-
-// users in JSON file for simplicity, store in a db for production applications
-import users from "./users.json";
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";

@@ -48,10 +48,8 @@ function NoteCard({
     content: `${TEXT ?? ""}`,
   });
   const isToday = useIsToday(date);
-  console.log(isToday)
 
   useEffect(() => {
-    console.log(selectedNotes)
     setselected(() =>
       selectedNotes?.find((note) => note.id == id) ? true : false
     );

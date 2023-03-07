@@ -7,6 +7,7 @@ import SideBar from "./SideBar";
 import { Note } from "../pages/_types";
 import { AiOutlineDelete, AiOutlineStar } from "react-icons/ai";
 import { MdOutlineRestoreFromTrash } from "react-icons/md";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
 
 type Props = {
   Notes: Note[] | [];
@@ -26,8 +27,8 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     Router.push({
       pathname: `/notes/${id}`,
       query: {
-        redirect: Router.asPath
-      }
+        redirect: Router.asPath,
+      },
     });
   };
 
@@ -56,7 +57,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     );
     setNotes(updatedNotes);
     if (title == "Recycle bin") {
-      localStorage.setItem("DELETED_NOTES", JSON.stringify(updatedNotes))
+      localStorage.setItem("DELETED_NOTES", JSON.stringify(updatedNotes));
     } else {
       localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
     }
@@ -98,7 +99,25 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     }
   }
 
-  console.log(Notes.length)
+  
+
+  useEffect(() => {
+
+    localStorage.removeItem("CURRENTID");
+    if (Notes) {
+      console.log(Notes);
+      const updatedNotes = Notes.filter((n) => {
+        if (n?.text || n?.title) {
+          return n;
+        }
+      });
+      if (updatedNotes?.length == Notes.length) return;
+      else {
+        setNotes(updatedNotes);
+        localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
+      }
+    }
+  }, [Notes]);
 
   return (
     <div
@@ -108,7 +127,9 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           : `${styles.note_app_container}`
       }
     >
-      {showSidebar && <SideBar showSidebar={showSidebarCopy} />}
+      {showSidebar && (
+        <SideBar showSidebar={showSidebarCopy} setNotes={setNotes} />
+      )}
       <div className={styles.note_app}>
         {/* Title */}
         <div
@@ -121,7 +142,9 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           <small>
             {Notes.length > 0
               ? Notes.length == 1
-                ? Notes.length + (title === "Recycle bin" ? " deleted": "") + " note"
+                ? Notes.length +
+                  (title === "Recycle bin" ? " deleted" : "") +
+                  " note"
                 : Notes.length +
                   (title == "Recycle bin" ? " deleted" : "") +
                   " notes"

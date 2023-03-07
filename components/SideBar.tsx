@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./Components.module.css";
 import SideBarLink from "./SideBarLink";
 import Image from "next/image";
-import { User } from "../pages/_types";
+import { Note, User } from "../pages/_types";
 import Router from "next/router";
 import { FcSynchronize } from "react-icons/fc";
 import { CgProfile } from "react-icons/cg";
@@ -13,9 +13,10 @@ import { toast } from "react-toastify";
 
 type Props = {
   showSidebar: boolean;
+  setNotes: React.Dispatch<React.SetStateAction<Note[] | undefined>>;
 };
 
-function SideBar({ showSidebar }: Props) {
+function SideBar({ showSidebar, setNotes }: Props) {
   const [storedNotesCount, setstoredNotesCount] = useState("");
   const [deletedNotesCount, setdeletedNotesCount] = useState("");
   const [User, setUser] = useState<User>();
@@ -24,7 +25,6 @@ function SideBar({ showSidebar }: Props) {
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
     const user = JSON.parse(localStorage.getItem("user")!);
-
     setstoredNotesCount(Notes?.length);
     setdeletedNotesCount(deletedNotes?.length);
     setUser(user as User);
@@ -33,7 +33,6 @@ function SideBar({ showSidebar }: Props) {
   async function syncData() {
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
-
     const res = await fetchWrapper.post(process.env.apiUrl + "/sync", {
       Notes,
       deletedNotes,
@@ -41,6 +40,26 @@ function SideBar({ showSidebar }: Props) {
     });
     if (res?.saved) {
       toast.success("your notes updated successfully");
+      const updatedNotes = res.DataStorage.Notes;
+      const updatedDeletedNotes = res.DataStorage.deletedNotes;
+      setstoredNotesCount(updatedNotes.length);
+      setdeletedNotesCount(updatedDeletedNotes.length);
+      const route = Router.asPath;
+      switch (route) {
+        case "/recycle":
+          setNotes(updatedDeletedNotes);
+          break;
+        case "/home":
+          setNotes(updatedNotes);
+          break;
+        default:
+          break;
+      }
+      localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
+      localStorage.setItem(
+        "DELETED_NOTES",
+        JSON.stringify(updatedDeletedNotes)
+      );
     } else {
       toast.error(
         "updating failed! try again later; if the error remains contact developer O.O"
@@ -94,7 +113,13 @@ function SideBar({ showSidebar }: Props) {
           <div>
             <button
               className={`${styles.control_pannel} ${styles.functions}`}
-              onClick={syncData}
+              onClick={() => {
+                if(!navigator.onLine){
+                  toast.info("your offline, check internet connection and try again!")
+                } else {
+                  syncData()
+                }
+              }}
             >
               <FcSynchronize size={25} color="white" />
               <div>Sync Notes</div>

@@ -17,11 +17,9 @@ async function get(url: string) {
     method: "GET",
     headers: authHeader(url) as HeadersInit | undefined,
   };
-  if (url == `${publicRuntimeConfig.apiUrl}/auth`) {
+  // return authHeader(url)
     return fetch(url, requestOptions).then(handleResponse);
-  } else {
-    return fetch(url, requestOptions).then(handleResponse);
-  }
+  
 }
 
 async function post(url: string, body: {} | string) {
@@ -58,7 +56,7 @@ function authHeader(url: string) {
   // return auth header with jwt if user is logged in and request is to the api url
   const user = userService.userValue;
   const isLoggedIn = user && user.token;
-  const isApiUrl = url.startsWith(publicRuntimeConfig.apiUrl);
+  const isApiUrl = url.startsWith('/api');
   if (isApiUrl && isLoggedIn) {
     return { Authorization: `Bearer ${user.token}` };
   } else {
