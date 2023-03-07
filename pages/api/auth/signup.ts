@@ -10,6 +10,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";
 import { Types } from 'mongoose'
+import Cors from 'cors'
+import { runMiddleware } from "../sync";
+
+const cors = Cors({
+  methods: ["POST", "GET", "HEAD"],
+});
 
 export default apiHandler(handler);
 
@@ -32,6 +38,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   async function createUser() {
+    runMiddleware(req,res,cors)
     await db.connect();
     
     const { username } = req.body;
