@@ -6,8 +6,10 @@ import { User } from "../pages/_types";
 import Router from "next/router";
 import { FcSynchronize } from "react-icons/fc";
 import { CgProfile } from "react-icons/cg";
-import Link from "next/link"
-
+import Link from "next/link";
+import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { userService } from "../services/user-service";
+import { toast } from "react-toastify";
 
 type Props = {
   showSidebar: boolean;
@@ -27,6 +29,24 @@ function SideBar({ showSidebar }: Props) {
     setdeletedNotesCount(deletedNotes?.length);
     setUser(user as User);
   }, []);
+
+  async function syncData() {
+    const Notes = JSON.parse(localStorage.getItem("NOTES")!);
+    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
+
+    const res = await fetchWrapper.post(process.env.apiUrl + "/sync", {
+      Notes,
+      deletedNotes,
+      username: userService.userValue.username,
+    });
+    if (res?.saved) {
+      toast.success("your notes updated successfully");
+    } else {
+      toast.error(
+        "updating failed! try again later; if the error remains contact developer O.O"
+      );
+    }
+  }
 
   return (
     <div
@@ -66,13 +86,16 @@ function SideBar({ showSidebar }: Props) {
         {User?.guest ? (
           <div className={styles.control_pannel}>
             <CgProfile size={25} color="white" />
-            <Link href={'/'} style={{color: "white"}}>
+            <Link href={"/"} style={{ color: "white" }}>
               Create Account for Free or SignIn
             </Link>
           </div>
         ) : (
           <div>
-            <button className={`${styles.control_pannel} ${styles.functions}`}>
+            <button
+              className={`${styles.control_pannel} ${styles.functions}`}
+              onClick={syncData}
+            >
               <FcSynchronize size={25} color="white" />
               <div>Sync Notes</div>
             </button>

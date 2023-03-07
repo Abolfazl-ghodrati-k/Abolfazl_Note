@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import "../styles/global.scss";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {

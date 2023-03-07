@@ -3,7 +3,7 @@ import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
 import { User } from "./_types";
-import usePwa from "../hooks/usePwa";
+// import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
   username?: string;
@@ -35,8 +35,8 @@ function LoginComponent() {
     var newMode = mode == "login" ? "signup" : "login";
     setmode(newMode);
   }
-  const register = usePwa();
-  console.log(register);
+  // const register = usePwa();
+  // console.log(register);
 
   useEffect(() => {
     console.log(mode)

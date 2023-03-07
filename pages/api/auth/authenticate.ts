@@ -23,7 +23,11 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   async function authenticate() {
-    await db.connect();
+    try {
+      await db.connect();
+    } catch (error) {
+      res.send(error);
+    }
 
     const { username, password } = req.body;
 
@@ -34,8 +38,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!user) {
       return res.status(200).json({
         token: false,
-        message: "Wrong username or password"
-      })
+        message: "Wrong username or password",
+      });
     }
 
     const isSamePass = await bcrypt.compare(password, user.password);
@@ -63,8 +67,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     } else {
       return res.status(200).json({
         token: false,
-        message: "Wrong username or password"
-      })
+        message: "Wrong username or password",
+      });
     }
   }
 }

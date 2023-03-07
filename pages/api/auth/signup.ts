@@ -39,7 +39,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     
     
     if(user){
-      throw "user exists"
+      return res.status(200).send({message:"user name already exists"})
     }
     
     

@@ -71,7 +71,7 @@ function handleAuth(response: any) {
 }
 
 function handleResponse(response: any) {
-//   return response;
+  // return response;
   return response.text().then((text: string) => {
       const data = text && JSON.parse(text);
 

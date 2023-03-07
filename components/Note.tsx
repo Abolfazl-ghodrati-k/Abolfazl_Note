@@ -15,7 +15,6 @@ type Props = {
 
 function Note({ note, id, redirect }: Props) {
   const [showMenu, setshowMenu] = useState(false);
-  console.log(redirect);
 
   const [Id, setId] = useState(() => {
     if (typeof window !== "undefined") {

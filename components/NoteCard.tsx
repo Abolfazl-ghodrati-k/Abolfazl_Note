@@ -47,7 +47,8 @@ function NoteCard({
     ],
     content: `${TEXT ?? ""}`,
   });
-  const isToday = useIsToday();
+  const isToday = useIsToday(date);
+  console.log(isToday)
 
   useEffect(() => {
     console.log(selectedNotes)
@@ -70,7 +71,7 @@ function NoteCard({
       {Title ? (
         <div>
           <h1 className={styles.note_card_title}>{Title}</h1>
-          <p className={styles.note_card_date}>{Clock}</p>
+          <p className={styles.note_card_date}>{isToday ? Clock: date}</p>
         </div>
       ) : (
         <p className={styles.note_card_date}>{date}</p>
