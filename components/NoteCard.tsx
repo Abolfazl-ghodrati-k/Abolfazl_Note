@@ -45,6 +45,7 @@ function NoteCard({
       BulletList.configure({ HTMLAttributes: { class: "my-custom-class" } }),
       ListItem,
     ],
+    editable: false,
     content: `${TEXT ?? ""}`,
   });
   const isToday = useIsToday(date);

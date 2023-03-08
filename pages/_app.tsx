@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import "../styles/global.scss";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 // const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
 // function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -48,6 +48,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import type { NextComponentType } from "next"; //Import Component type
 import { observer } from "mobx-react-lite";
 import { User } from "./_types";
+import ContextWrapper from "../context/Loading";
+import LoadingModal from "../modals/LoadingModal";
+import Head from "next/head";
 
 //Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
@@ -92,12 +95,21 @@ const App = observer(({ Component, pageProps }: CustomAppProps) => {
 
   return (
     <>
+      <Head>
+        <title>Abolfaz Note</title>
+      </Head>
       {Component.auth ? (
         <AuthControll>
-          <Component {...pageProps} />
+          <ContextWrapper>
+            <LoadingModal />
+            <Component {...pageProps} />
+          </ContextWrapper>
         </AuthControll>
       ) : (
-        <Component {...pageProps} />
+        <ContextWrapper>
+          <LoadingModal />
+          <Component {...pageProps} />
+        </ContextWrapper>
       )}
       <ToastContainer position="top-center" />
     </>

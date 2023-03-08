@@ -64,6 +64,7 @@
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   padding: 10px;
   gap: 8px;
+  height: 100%;
 }
 
 .note_card {
@@ -73,6 +74,18 @@
   height: auto;
   cursor: pointer;
   transition: all ease-in-out 5ms;
+  max-height: 130px;
+  -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.note_card:focus {
+  outline: none !important;
 }
 
 .note_card:hover {
@@ -151,6 +164,7 @@
   padding: 10px 15px;
   right: 9px;
   top: 0.7rem;
+  z-index: 1000;
 }
 
 .menu ul {

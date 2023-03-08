@@ -38,7 +38,7 @@ function LoginComponent() {
   }
 
   useEffect(() => {
-    console.log(mode)
+    console.log(mode);
     Setusername("");
     Setpassword("");
     SetpasRepeat("");
@@ -52,7 +52,7 @@ function LoginComponent() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const isValid = Validation(username, password);
-    console.log(isValid)
+    console.log(isValid);
     if (isValid) {
       setloading(true);
       if (mode == "signup") {
@@ -70,9 +70,9 @@ function LoginComponent() {
         const user = await userService.login(username, password);
         setloading(false);
         if (user.token) {
-          const {savedNotes,deletedNotes} = await recieveNotes()
-          localStorage.setItem("NOTES", JSON.stringify(savedNotes))
-          localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes))
+          const { savedNotes, deletedNotes } = await recieveNotes();
+          localStorage.setItem("NOTES", JSON.stringify(savedNotes));
+          localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
           Router.push("/home");
         } else {
           seterror(user.message);
@@ -82,13 +82,6 @@ function LoginComponent() {
         }
       }
     }
-  }
-
-  async function recieveNotes() {
-    const notes = await fetchWrapper.get('/api/notes')
-    const savedNotes = notes[0].Notes
-    const deletedNotes = notes[0].deletedNotes
-    return {savedNotes,deletedNotes}
   }
 
   function Validation(username: string, password: string) {
@@ -169,6 +162,13 @@ function LoginComponent() {
       </div>
     );
   }
+}
+
+export async function recieveNotes() {
+  const notes = await fetchWrapper.get("/api/notes");
+  const savedNotes = notes[0].Notes;
+  const deletedNotes = notes[0].deletedNotes;
+  return { savedNotes, deletedNotes };
 }
 
 export default LoginComponent;

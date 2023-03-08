@@ -15,7 +15,8 @@
       "default",
       {
         "ignore": [
-          "translate"
+          "translate",
+          "-webkit-tap-highlight-color"
         ]
       }
     ],
@@ -33,6 +34,7 @@
         ]
       }
     ],
-    "apple-touch-icons": "off"
+    "apple-touch-icons": "off",
+    "manifest-file-extension": "off"
   }
 }

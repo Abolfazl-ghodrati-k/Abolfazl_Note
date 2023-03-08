@@ -5,11 +5,13 @@ import Image from "next/image";
 import { Note, User } from "../pages/_types";
 import Router from "next/router";
 import { FcSynchronize } from "react-icons/fc";
+import { MdSystemUpdateAlt } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { userService } from "../services/user-service";
 import { toast } from "react-toastify";
+import { recieveNotes } from "../pages";
 
 type Props = {
   showSidebar: boolean;
@@ -110,21 +112,71 @@ function SideBar({ showSidebar, setNotes }: Props) {
             </Link>
           </div>
         ) : (
-          <div>
-            <button
-              className={`${styles.control_pannel} ${styles.functions}`}
-              onClick={() => {
-                if(!navigator.onLine){
-                  toast.info("your offline, check internet connection and try again!")
-                } else {
-                  syncData()
-                }
-              }}
-            >
-              <FcSynchronize size={25} color="white" />
-              <div>Sync Notes</div>
-            </button>
-          </div>
+          <>
+            <div>
+              <button
+                className={`${styles.control_pannel} ${styles.functions}`}
+                onClick={() => {
+                  if (!navigator.onLine) {
+                    toast.info(
+                      "your offline, check internet connection and try again!"
+                    );
+                  } else {
+                    syncData();
+                  }
+                }}
+              >
+                <FcSynchronize size={25} color="white" />
+                <div>Sync Notes</div>
+              </button>
+            </div>
+            <div>
+              <button
+                className={`${styles.control_pannel} ${styles.functions}`}
+                onClick={async () => {
+                  if (!navigator.onLine) {
+                    toast.info(
+                      "your offline, check internet connection and try again!"
+                    );
+                  } else {
+                    const { savedNotes, deletedNotes } = await recieveNotes();
+                    const Notes = JSON.parse(localStorage.getItem("NOTES")!) ?? [];
+                    const DeletedNotes = JSON.parse(
+                      localStorage.getItem("DELETED_NOTES")!
+                    )?? [];
+                    console.log(savedNotes)
+                    savedNotes.forEach((element: Note, index:number) => {
+                      Notes?.push(savedNotes[index]);
+                    });
+                    deletedNotes.forEach((element: Note, index:number) => {
+                      DeletedNotes?.push(deletedNotes[index]);
+                    });
+                    setstoredNotesCount(Notes?.length);
+                    setdeletedNotesCount(DeletedNotes?.length);
+                    const route = Router.asPath;
+                    switch (route) {
+                      case "/recycle":
+                        setNotes(DeletedNotes);
+                        break;
+                      case "/home":
+                        setNotes(Notes);
+                        break;
+                      default:
+                        break;
+                    }
+                    localStorage.setItem("NOTES", JSON.stringify(Notes));
+                    localStorage.setItem(
+                      "DELETED_NOTES",
+                      JSON.stringify(DeletedNotes)
+                    );
+                  }
+                }}
+              >
+                <MdSystemUpdateAlt size={25} color="orangered" />
+                <div>recieve Notes</div>
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
