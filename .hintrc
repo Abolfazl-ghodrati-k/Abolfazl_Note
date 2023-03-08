@@ -16,7 +16,8 @@
       {
         "ignore": [
           "translate",
-          "-webkit-tap-highlight-color"
+          "-webkit-tap-highlight-color",
+          "backdrop-filter"
         ]
       }
     ],
