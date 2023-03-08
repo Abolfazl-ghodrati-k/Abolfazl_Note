@@ -4,6 +4,7 @@ import { userService } from "../services/user-service";
 import Router from "next/router";
 import { User } from "./_types";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import useLoading from "../hooks/useLoading";
 // import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
@@ -21,7 +22,6 @@ function LoginComponent() {
   const [pasRepeat, SetpasRepeat] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
   const [error, seterror] = useState<string>("");
-  const [user, setuser] = useState<User>(userService.userValue);
 
   const Login_props = {
     username,
@@ -37,14 +37,18 @@ function LoginComponent() {
     setmode(newMode);
   }
 
+  const {startLoading, finishLoading} = useLoading()
+
   useEffect(() => {
-    console.log(mode);
+    startLoading('Validating ...')
+    console.log(userService.userValue)
     Setusername("");
     Setpassword("");
     SetpasRepeat("");
-    if (user?.token) {
+    if (userService.userValue?.token) {
       Router.push("/home");
     } else {
+      finishLoading()
       setpageLoading(false);
     }
   }, [mode]);
@@ -54,10 +58,9 @@ function LoginComponent() {
     const isValid = Validation(username, password);
     console.log(isValid);
     if (isValid) {
-      setloading(true);
       if (mode == "signup") {
+        startLoading('Signing up...✌️😒')
         const user = await userService.signup(username, password);
-        setloading(false);
         if (user.message) {
           seterror(user.message);
           setTimeout(() => {
@@ -65,17 +68,20 @@ function LoginComponent() {
           }, 3000);
         } else {
           Router.push("/home");
+          finishLoading()
         }
       } else {
+        startLoading('Logging in ... Welcome😁😘')
         const user = await userService.login(username, password);
-        setloading(false);
+        console.log(user)
         if (user.token) {
           const { savedNotes, deletedNotes } = await recieveNotes();
           localStorage.setItem("NOTES", JSON.stringify(savedNotes));
           localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
           Router.push("/home");
+          finishLoading()
         } else {
-          seterror(user.message);
+          seterror(user.message ? user.message : user.code? "Error try again Later or enter as a guest": "Unknown Error!");
           setTimeout(() => {
             seterror("");
           }, 3000);
@@ -154,7 +160,6 @@ function LoginComponent() {
             Login_props={Login_props}
             seterrors={seterrors}
           />
-          {loading && <p>loading ...</p>}
           {error && (
             <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
           )}

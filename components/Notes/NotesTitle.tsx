@@ -1,5 +1,5 @@
 import React from "react";
-import { Note } from "../pages/_types";
+import { Note } from "../../pages/_types";
 
 type Props = {
     title: string,

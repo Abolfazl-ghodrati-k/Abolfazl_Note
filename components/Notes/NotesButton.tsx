@@ -1,6 +1,6 @@
 import React from "react";
 import { MdOutlineRestoreFromTrash } from "react-icons/md";
-import { Note } from "../pages/_types";
+import { Note } from "../../pages/_types";
 import { AiOutlineDelete, AiOutlineStar } from "react-icons/ai";
 import Router from "next/router";
 

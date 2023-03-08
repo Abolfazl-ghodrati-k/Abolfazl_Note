@@ -3,7 +3,15 @@ import { LoadingContext } from "../context/Loading";
 
 function useLoading() {
   const { text, settext, loading, setloading } = useContext(LoadingContext)!;
-  return { text, settext, loading, setloading };
+  const startLoading = (t:string) => {
+    setloading(true)
+    settext(t)
+  }
+  const finishLoading = () => {
+    setloading(false)
+    settext('')
+  }
+  return { loading, text, settext, startLoading, finishLoading };
 }
 
 export default useLoading;

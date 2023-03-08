@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import styles from "../pages/home/Home.module.css";
+import styles from "../../pages/home/Home.module.css";
 import NoteCard from "./NoteCard";
 import Router from "next/router";
-import SideBar from "./SideBar";
-import { Note } from "../pages/_types";
+import SideBar from "../SideBar";
+import { Note } from "../../pages/_types";
 import NotesTitle from "./NotesTitle";
 import NotesNav from "./NotesNav";
 import NotesButton from "./NotesButton";

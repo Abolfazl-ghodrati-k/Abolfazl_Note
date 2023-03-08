@@ -1,116 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import type { AppProps } from "next/app";
 import "../styles/global.scss";
 import { userService } from "../services/user-service";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-// const  useLocalStorage = dynamic(() => import('../hooks/useLocalStorage'), { ssr: false })
-// function urlBase64ToUint8Array(base64String: string): Uint8Array {
-// 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-// 	const base64 = (base64String + padding)
-// 		.replace(/\-/g, "+")
-// 		.replace(/_/g, "/");
-
-// 	const rawData = window.atob(base64);
-// 	const outputArray = new Uint8Array(rawData.length);
-
-// 	for (let i = 0; i < rawData.length; ++i) {
-// 		outputArray[i] = rawData.charCodeAt(i);
-// 	}
-// 	return outputArray;
-// }
-
-// async function send() {
-// 	//register service worker
-// 	const register = await navigator.serviceWorker.register("/sw.js");
-
-// 	//register push
-// 	const subscription = await register.pushManager.subscribe({
-// 		userVisibleOnly: true,
-
-// 		//public vapid key
-// 		applicationServerKey: urlBase64ToUint8Array(
-// 			"BAu-TfmAVhNAnp9-i1X-LDN9EkkaeIaH71gTXiWuqWsf2zag_XjCgd5RZYUHy1cPQCqG8m7FxDt4IAI0HEod5XM"
-// 		),
-// 	});
-
-// 	//Send push notification
-// 	await fetch("http://localhost:300/subscribe", {
-// 		method: "POST",
-// 		body: JSON.stringify(subscription),
-// 		headers: {
-// 			"content-type": "application/json",
-// 		},
-// 	});
-// }
-
 import type { NextComponentType } from "next"; //Import Component type
 import { observer } from "mobx-react-lite";
 import { User } from "./_types";
 import ContextWrapper from "../context/Loading";
 import LoadingModal from "../modals/LoadingModal";
 import Head from "next/head";
+import useLoading from "../hooks/useLoading";
+import Router, { useRouter } from "next/router";
+import ConfiramtionModal from "../modals/ConfiramtionModal";
+import ModalContextWrapper from "../context/Confirm";
 
-//Add custom appProp type then use union to add it
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { auth?: boolean }; // add auth type
 };
 
 const App = observer(({ Component, pageProps }: CustomAppProps) => {
-  // useEffect(() => {
-  // 	// if ("serviceWorker" in navigator) {
-  // 	// 	const  send = async() =>  {
-  // 	// 		//register service worker
-  // 	// 		const register = await navigator.serviceWorker.register(
-  // 	// 			"/sw.js"
-  // 	// 		);
-
-  // 	// 		//register push
-  // 	// 		const subscription = await register.pushManager.subscribe({
-  // 	// 			userVisibleOnly: true,
-
-  // 	// 			//public vapid key
-  // 	// 			applicationServerKey:
-  // 	// 				"BOJbNAs15gxY3Fj75-HbUzBEqyp7I40uG5yHSYIqRQYIf2b9MfZwod9g_Lb16GG2asT304tPTBMlcKAC_NXQj7g",
-  // 	// 		});
-
-  // 	// 		console.log("subscription: ", JSON.stringify(subscription));
-
-  // 	// 		// //Send push notification
-  // 	// 		// await fetch("http://localhost:3000/api/hello", {
-  // 	// 		// 	method: "POST",
-  // 	// 		// 	body: JSON.stringify(subscription),
-  // 	// 		// 	headers: {
-  // 	// 		// 		"content-type": "application/json",
-  // 	// 		// 	},
-  // 	// 		// });
-  // 	// 	}
-
-  // 	// 	send()
-  // 	// 		.catch((err) => console.log("err",err))
-  // 	// 		.then((res) => console.log("res",res));
-  // 	// }
-  // }, []);
 
   return (
     <>
       <Head>
         <title>Abolfaz Note</title>
       </Head>
-      {Component.auth ? (
-        <AuthControll>
-          <ContextWrapper>
-            <LoadingModal />
-            <Component {...pageProps} />
-          </ContextWrapper>
-        </AuthControll>
-      ) : (
+      <ModalContextWrapper>
         <ContextWrapper>
           <LoadingModal />
-          <Component {...pageProps} />
+          <ConfiramtionModal />
+          {Component.auth ? (
+            <AuthControll> <Component {...pageProps} />
+            </AuthControll>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </ContextWrapper>
-      )}
+      </ModalContextWrapper>
       <ToastContainer position="top-center" />
     </>
   );
@@ -123,32 +50,45 @@ type Props = {
 };
 
 const AuthControll = ({ children }: Props) => {
-  const [loading, setloading] = useState(true);
   const [res, setres] = useState<any>();
+  const { loading, startLoading, finishLoading } = useLoading();
 
   useEffect(() => {
+    startLoading("authenticating ...");
     const user = JSON.parse(localStorage.getItem("user")!) as User;
+    authenticate(user).catch((err) => console.error);
+    finishLoading();
+  }, []);
+
+  const authenticate = useCallback(async (user: User) => {
     if (user?.guest) {
-      setloading(false);
       setres(user);
     } else if (!user?.guest) {
-      userService.getAll().then((response) => {
-        setloading(false);
-        console.log(response);
-        setres(response);
-      }) as unknown as any;
-    } else {
-      setloading(false);
+      (await userService.getAll().then((response) => {
+        if (response?.message?.username) {
+          setres(response);
+        } else {
+          Router.push("/unAuthorized");
+        }
+        // console.log(response.message)
+      })) as unknown as any;
     }
   }, []);
+
   if (loading) {
-    return <div>loading... please wait</div>;
-  } else if (res?.user?.guest) {
-    return <>{children}</>;
-  } else if (res?.message?.username) {
+    return null;
+  } else if (res?.user?.guest || res?.message?.username) {
     return <>{children}</>;
   } else {
-    userService.logout();
+    // userService.logout();
     return null;
   }
+  //  if (res?.user?.guest) {
+  //   return <>{children}</>;
+  // } else if (res?.message?.username) {
+  //   return <>{children}</>;
+  // } else {
+  //   userService.logout();
+  //   return null;
+  // }
 };

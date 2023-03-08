@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Router from "next/router";
 import React from "react";
-import { Note } from "../pages/_types";
+import { Note } from "../../pages/_types";
 
 type Props = {
   ShowMenu: boolean;

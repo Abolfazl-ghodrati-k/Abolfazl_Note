@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./Components.module.css";
 import SideBarLink from "./SideBarLink";
 import Image from "next/image";
@@ -12,6 +12,8 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { userService } from "../services/user-service";
 import { toast } from "react-toastify";
 import { recieveNotes } from "../pages";
+import useLoading from "../hooks/useLoading";
+import useModal from "../hooks/useModal";
 
 type Props = {
   showSidebar: boolean;
@@ -22,6 +24,25 @@ function SideBar({ showSidebar, setNotes }: Props) {
   const [storedNotesCount, setstoredNotesCount] = useState("");
   const [deletedNotesCount, setdeletedNotesCount] = useState("");
   const [User, setUser] = useState<User>();
+  const { startLoading, finishLoading } = useLoading();
+  const { openmodal, isYes, sethalat, halat } = useModal();
+
+  useEffect(() => {
+    setTimeout(() => {
+      sethalat("bitch");
+    }, 3000);
+  });
+
+  useEffect(() => {
+    (async () => {
+      const doit = await isYes();
+      if (doit) {
+        await syncData();
+      } else if (!doit) {
+        console.log("dont do it");
+      }
+    })();
+  }, [halat]);
 
   useEffect(() => {
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
@@ -32,7 +53,8 @@ function SideBar({ showSidebar, setNotes }: Props) {
     setUser(user as User);
   }, []);
 
-  async function syncData() {
+  const syncData = async () => {
+    startLoading("syncing data...");
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
     const res = await fetchWrapper.post("/api/sync", {
@@ -40,6 +62,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
       deletedNotes,
       username: userService.userValue.username,
     });
+    finishLoading();
     if (res?.saved) {
       toast.success("your notes updated successfully");
       const updatedNotes = res.DataStorage.Notes;
@@ -67,6 +90,15 @@ function SideBar({ showSidebar, setNotes }: Props) {
         "updating failed! try again later; if the error remains contact developer O.O"
       );
     }
+  };
+
+  async function decideTodo() {
+    openmodal(
+      "Sure to owerrite notes in database?" +
+        "\n" +
+        "you can update notes first..."
+    );
+    return;
   }
 
   return (
@@ -122,7 +154,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
                       "your offline, check internet connection and try again!"
                     );
                   } else {
-                    syncData();
+                    decideTodo();
                   }
                 }}
               >
@@ -139,17 +171,27 @@ function SideBar({ showSidebar, setNotes }: Props) {
                       "your offline, check internet connection and try again!"
                     );
                   } else {
+                    startLoading("Recieving saved Notes ...");
                     const { savedNotes, deletedNotes } = await recieveNotes();
-                    const Notes = JSON.parse(localStorage.getItem("NOTES")!) ?? [];
-                    const DeletedNotes = JSON.parse(
-                      localStorage.getItem("DELETED_NOTES")!
-                    )?? [];
-                    console.log(savedNotes)
-                    savedNotes.forEach((element: Note, index:number) => {
-                      Notes?.push(savedNotes[index]);
+                    finishLoading();
+                    const Notes =
+                      JSON.parse(localStorage.getItem("NOTES")!) ?? [];
+                    const DeletedNotes =
+                      JSON.parse(localStorage.getItem("DELETED_NOTES")!) ?? [];
+                    console.log(savedNotes);
+                    savedNotes.forEach((element: Note, index: number) => {
+                      const exists = Notes.some((n: any) => n.id == element.id);
+                      if (!exists) {
+                        Notes?.push(savedNotes[index]);
+                      }
                     });
-                    deletedNotes.forEach((element: Note, index:number) => {
-                      DeletedNotes?.push(deletedNotes[index]);
+                    deletedNotes.forEach((element: Note, index: number) => {
+                      const exists = DeletedNotes.some(
+                        (n: any) => n.id == element.id
+                      );
+                      if (!exists) {
+                        Notes?.push(savedNotes[index]);
+                      }
                     });
                     setstoredNotesCount(Notes?.length);
                     setdeletedNotesCount(DeletedNotes?.length);
@@ -169,6 +211,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
                       "DELETED_NOTES",
                       JSON.stringify(DeletedNotes)
                     );
+                    toast.dark("notes updated successfully");
                   }
                 }}
               >

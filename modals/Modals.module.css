@@ -15,20 +15,89 @@
   align-items: center;
 }
 
-.hide_modal{
+.hide_modal {
   display: none !important;
 }
 
-.modal_wrapper{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 25px;
-    color: white;
+.modal_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 25px;
+  color: white;
 }
 
-/* .modal_container::before{
-    content: '';
-    filter: blur(3px);
-} */
+.confirm_modal_container {
+  min-width: 100vw;
+  min-height: 100vh;
+  background: rgb(75, 72, 116);
+  background: linear-gradient(
+    90deg,
+    rgba(24, 19, 95, 0.644) 5%,
+    rgba(13, 20, 70, 0.671) 35%,
+    rgba(7, 16, 58, 0.719) 100%
+  );
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  position: absolute;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.confirm_modal_wrapper {
+  color: white;
+  min-width: 370px;
+  min-height: 220px;
+  padding: 10px;
+  background: #010529;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between ;
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 70px;
+  padding: 0 50px 5px;
+
+}
+
+.yes_button{
+  width: 49%;
+  background: green;
+  padding: 15px;
+  color: white;
+  font-size: 1.1rem;
+
+  border-radius: 10px;
+}
+
+.no_button{
+  width: 49%;
+  background: red;
+  color: white;
+  font-size: 1.1rem;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.button{
+  transition: all .3s ease-in-out;
+  cursor: pointer;
+}
+
+.button:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(255, 255, 255, 0.30) 0px -12px 20px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}

@@ -15,7 +15,7 @@ type Props = {
 
 const ContextWrapper = ({children}: Props) => {
     const [loading, setloading] = useState(false)
-    const [text, settext] = useState("")
+    const [text, settext] = useState<string>("")
 
     return(
         <LoadingContext.Provider value={{text, settext,loading, setloading}}>

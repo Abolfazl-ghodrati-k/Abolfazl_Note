@@ -63,6 +63,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   padding: 10px;
+  align-content: flex-start;
   gap: 8px;
   height: 100%;
 }

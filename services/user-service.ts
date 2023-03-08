@@ -1,6 +1,5 @@
 import { BehaviorSubject } from "rxjs";
 import getConfig from "next/config";
-import Router from "next/router";
 import {v4 as uuid} from "uuid"
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
@@ -62,9 +61,8 @@ async function signup(username: string, password: string) {
 
 function logout() {
   // remove user from local storage, publish null to user subscribers and redirect to login page
-  localStorage.removeItem("user");
+  process.browser && localStorage.removeItem("user");
   userSubject.next(null);
-  Router.push("/");
 }
 
 function getAll() {
