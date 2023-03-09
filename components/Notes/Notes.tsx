@@ -7,6 +7,7 @@ import { Note } from "../../pages/_types";
 import NotesTitle from "./NotesTitle";
 import NotesNav from "./NotesNav";
 import NotesButton from "./NotesButton";
+import useLongPress from "../../hooks/useLongPress";
 
 type Props = {
   Notes: Note[] | [];
@@ -21,6 +22,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   const [onDelete, setonDelete] = useState(false);
   const [onFavorite, setonFavorite] = useState(false);
   const [selectedNotes, setselectedNotes] = useState<Note[]>([]);
+  const [note, setnote] = useState<Note>()
 
   const ShowNote = (id: string) => {
     Router.push({
@@ -42,7 +44,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     }
   }
 
-  const selectNote = (e: React.MouseEvent<HTMLDivElement>,note: Note) => {
+  const selectNote = (note: Note) => {
     if (!onDelete && !onFavorite) {
       ShowNote(note.id);
     } else {
@@ -59,7 +61,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
         setselectedNotes([...selectedNotes, { ...note }]);
       }
     }
-  }
+  };
 
   function removeJunkNote() {
     localStorage.removeItem("CURRENTID");
@@ -79,8 +81,22 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   }
 
   useEffect(() => {
-    removeJunkNote()
+    removeJunkNote();
   }, [Notes]);
+
+  const backspaceLongPress = useLongPress({
+    onLongPress(e) {
+      if (onDelete || onFavorite) {
+        return;
+      }
+      else {
+        setonDelete(true)
+      }
+    },
+    onClick(e) {
+      selectNote(note!)
+    },
+  });
 
   return (
     <div
@@ -124,23 +140,27 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
             setShowMenu(false);
           }}
         >
-          {Notes?.map((note) => (
-            <div
-              className={styles.note_card}
-              key={note.id}
-              onClick={(e) => selectNote(e,note)}
-            >
-              <NoteCard
-                onSelecting={onDelete || onFavorite}
-                selectedNotes={selectedNotes}
-                id={note.id}
-                title={note.title}
-                clock={note.clock}
-                date={note.date}
-                text={note.text}
-              />
-            </div>
-          ))}
+          {Notes?.map(
+            (note) =>
+              note && (
+                <div
+                  className={styles.note_card}
+                  key={note?.id}
+                  onClick={(e) => setnote(note)}
+                  {...backspaceLongPress}
+                >
+                  <NoteCard
+                    onSelecting={onDelete || onFavorite}
+                    selectedNotes={selectedNotes}
+                    id={note?.id}
+                    title={note?.title}
+                    clock={note?.clock}
+                    date={note?.date}
+                    text={note?.text}
+                  />
+                </div>
+              )
+          )}
         </div>
         {/* Notes functionality */}
         <NotesButton

@@ -12,8 +12,8 @@ import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item"
 
 type NoteCardProps = {
-  selectedNotes: Note[] | undefined;
-  onSelecting: boolean;
+  selectedNotes?: Note[] | undefined;
+  onSelecting?: boolean;
 } & Note;
 
 function NoteCard({
@@ -64,8 +64,9 @@ function NoteCard({
     }
   }
 
+
   return (
-    <div className={styles.note_card_container}>
+    <div className={styles.note_card_container} >
       {onSelecting && <div className={isSelected()}></div>}
       {Title ? (
         <div>

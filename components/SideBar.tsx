@@ -174,44 +174,53 @@ function SideBar({ showSidebar, setNotes }: Props) {
                     startLoading("Recieving saved Notes ...");
                     const { savedNotes, deletedNotes } = await recieveNotes();
                     finishLoading();
-                    const Notes =
-                      JSON.parse(localStorage.getItem("NOTES")!) ?? [];
-                    const DeletedNotes =
-                      JSON.parse(localStorage.getItem("DELETED_NOTES")!) ?? [];
-                    console.log(savedNotes);
-                    savedNotes.forEach((element: Note, index: number) => {
-                      const exists = Notes.some((n: any) => n.id == element.id);
-                      if (!exists) {
-                        Notes?.push(savedNotes[index]);
+                    if (
+                      savedNotes?.length == 0 ||
+                      (savedNotes?.length > 0 &&
+                        (deletedNotes?.length == 0 || deletedNotes?.length > 0))
+                    ) {
+                      const Notes =
+                        JSON.parse(localStorage.getItem("NOTES")!) ?? [];
+                      const DeletedNotes =
+                        JSON.parse(localStorage.getItem("DELETED_NOTES")!) ??
+                        [];
+                      console.log(savedNotes);
+                      savedNotes?.forEach((element: Note, index: number) => {
+                        const exists = Notes?.some(
+                          (n: any) => n?.id == element?.id
+                        );
+                        if (!exists) {
+                          Notes?.push(savedNotes[index]);
+                        }
+                      });
+                      deletedNotes?.forEach((element: Note, index: number) => {
+                        const exists = DeletedNotes.some(
+                          (n: any) => n?.id == element?.id
+                        );
+                        if (!exists) {
+                          Notes?.push(savedNotes[index]);
+                        }
+                      });
+                      setstoredNotesCount(Notes?.length);
+                      setdeletedNotesCount(DeletedNotes?.length);
+                      const route = Router.asPath;
+                      switch (route) {
+                        case "/recycle":
+                          setNotes(DeletedNotes);
+                          break;
+                        case "/home":
+                          setNotes(Notes);
+                          break;
+                        default:
+                          break;
                       }
-                    });
-                    deletedNotes.forEach((element: Note, index: number) => {
-                      const exists = DeletedNotes.some(
-                        (n: any) => n.id == element.id
+                      localStorage.setItem("NOTES", JSON.stringify(Notes));
+                      localStorage.setItem(
+                        "DELETED_NOTES",
+                        JSON.stringify(DeletedNotes)
                       );
-                      if (!exists) {
-                        Notes?.push(savedNotes[index]);
-                      }
-                    });
-                    setstoredNotesCount(Notes?.length);
-                    setdeletedNotesCount(DeletedNotes?.length);
-                    const route = Router.asPath;
-                    switch (route) {
-                      case "/recycle":
-                        setNotes(DeletedNotes);
-                        break;
-                      case "/home":
-                        setNotes(Notes);
-                        break;
-                      default:
-                        break;
-                    }
-                    localStorage.setItem("NOTES", JSON.stringify(Notes));
-                    localStorage.setItem(
-                      "DELETED_NOTES",
-                      JSON.stringify(DeletedNotes)
-                    );
-                    toast.dark("notes updated successfully");
+                      toast.dark("notes updated successfully");
+                    } else {return}
                   }
                 }}
               >

@@ -11,8 +11,8 @@ function index() {
     if (stringedNotes) {
       const parsedNotes = JSON.parse(stringedNotes);
       const actualNotes = JSON.parse(Notes) as Note[];
-      const filteredRecycles = parsedNotes.filter((element: Note, index: string) => {
-        const buggedNote = actualNotes.find((n: Note) => n.id == element.id);
+      const filteredRecycles = parsedNotes?.filter((element: Note, index: string) => {
+        const buggedNote = actualNotes?.find((n: Note) => n.id == element.id);
         if (buggedNote) {
           return element.id != buggedNote.id;
         } else {

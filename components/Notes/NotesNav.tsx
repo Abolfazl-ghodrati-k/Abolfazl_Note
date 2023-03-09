@@ -15,8 +15,8 @@ type Props = {
   showSidebar: boolean;
   setshowSidebarCopy: React.Dispatch<React.SetStateAction<boolean>>;
   setshowSidebar: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedNotes: Note[]
-  setselectedNotes: React.Dispatch<React.SetStateAction<Note[]>>
+  selectedNotes: Note[];
+  setselectedNotes: React.Dispatch<React.SetStateAction<Note[]>>;
 };
 
 function NotesNav({
@@ -32,7 +32,7 @@ function NotesNav({
   setshowSidebarCopy,
   setshowSidebar,
   title,
-  selectedNotes
+  selectedNotes,
 }: Props) {
   function show() {
     if (ShowMenu) {
@@ -55,7 +55,10 @@ function NotesNav({
         <div
           className={styles.search_icon}
           onClick={() => {
-            Router.push("/search");
+            Router.push({
+              pathname:"/search",
+              query:{redirect: Router.asPath}
+            });
             setShowMenu(false);
             setonDelete(false);
             setonFavorite(false);
@@ -117,9 +120,34 @@ function NotesNav({
       </div>
       {/* Show side bar action handling --------------------------------------------------------------------- */}
       {onDelete || onFavorite ? (
-        <div>
-          <div>{selectedNotes?.length ? selectedNotes?.length+' selected notes': '0 selected notes'}</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "25px",
+          }}
+        >
           <div>
+            {selectedNotes?.length
+              ? selectedNotes?.length + " selected notes"
+              : "0 selected notes"}
+          </div>
+          <div
+            onClick={() => {
+              setonDelete(false);
+              setonFavorite(false);
+              setselectedNotes([])
+            }}
+            style={{
+              cursor: "pointer",
+              background: "gray",
+              color: "white",
+              fontSize: "1.2rem",
+              padding: "4px 8px",
+              borderRadius: "10px",
+            }}
+          >
             cancel
           </div>
         </div>

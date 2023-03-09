@@ -14,6 +14,7 @@ import useLoading from "../hooks/useLoading";
 import Router, { useRouter } from "next/router";
 import ConfiramtionModal from "../modals/ConfiramtionModal";
 import ModalContextWrapper from "../context/Confirm";
+import router from "next/router";
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { auth?: boolean }; // add auth type
@@ -26,12 +27,15 @@ const App = observer(({ Component, pageProps }: CustomAppProps) => {
       <Head>
         <title>Abolfaz Note</title>
       </Head>
+      
       <ModalContextWrapper>
         <ContextWrapper>
           <LoadingModal />
           <ConfiramtionModal />
           {Component.auth ? (
-            <AuthControll> <Component {...pageProps} />
+            <AuthControll>
+              {" "}
+              <Component {...pageProps} />
             </AuthControll>
           ) : (
             <Component {...pageProps} />

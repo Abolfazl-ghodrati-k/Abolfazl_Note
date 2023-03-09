@@ -45,3 +45,37 @@
   font-size: 1.3rem;
   color: white;
 }
+
+.results_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  padding: 10px;
+  align-content: flex-start;
+  gap: 8px;
+  height: 100%;
+}
+
+.result{
+  background-color: rgb(17, 16, 16);
+  border-radius: 15px;
+  padding: 10px;
+  height: auto;
+  cursor: pointer;
+  transition: all ease-in-out 5ms;
+  max-height: 130px;
+  -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.result:focus {
+  outline: none !important;
+}
+
+.result:hover {
+  box-shadow: 1px 1px 5px gray;
+}

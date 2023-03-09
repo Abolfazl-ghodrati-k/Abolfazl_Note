@@ -6,9 +6,11 @@ import TipTap from "./TipTap";
 import { Note, NoteData } from "../pages/_types";
 import useStatus from "../hooks/useStatus";
 import { v4 as uuid } from "uuid";
+import useLoading from "../hooks/useLoading";
+import { toast } from "react-toastify";
 
 type Props = {
-  note?: Note
+  note?: Note;
   id?: string;
   redirect: string;
 };
@@ -59,8 +61,6 @@ function Note({ note, id, redirect }: Props) {
       return "";
     }
   });
-
-  const online = useStatus();
 
   function show() {
     if (showMenu) {
@@ -121,14 +121,79 @@ function Note({ note, id, redirect }: Props) {
     }
   }
 
+  const { startLoading, finishLoading } = useLoading();
+
+  function handleNote() {
+    switch (Router.query.redirect) {
+      case "/recycle":
+        restoreNote();
+        break;
+      case "/home":
+        deleteNote();
+        break;
+      default:
+        break;
+    }
+  }
+
+  function deleteNote() {
+    const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+    const filteredNotes = Notes?.filter((note) => note.id != id);
+    localStorage.setItem("NOTES", JSON.stringify(filteredNotes));
+    const foundNote = Notes?.find((note) => note.id == id)!;
+    const deletedNotes = JSON.parse(
+      localStorage.getItem("DELETED_NOTES")!
+    ) as Note[];
+    deletedNotes?.push(foundNote);
+    localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
+    toast.dark("note deleted successfully");
+    setTimeout(() => {
+      if (Router.query.fromSearch) {
+        Router.push({
+          pathname: "/search",
+          query: {
+            redirect: redirect,
+          },
+        });
+      } else {
+        Router.push(`${redirect}`);
+      }
+    }, 1000);
+  }
+
+  function restoreNote() {
+    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!) as Note[];
+    const filteredNotes = deletedNotes?.filter((note) => note.id != id);
+    localStorage.setItem("DELETED_NOTES", JSON.stringify(filteredNotes));
+    const foundNote = deletedNotes?.find((note) => note.id == id)!;
+    const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[];
+    Notes?.push(foundNote);
+    localStorage.setItem("NOTES", JSON.stringify(Notes));
+    toast.dark("note restored successfully");
+    setTimeout(() => {
+      if (Router.query.fromSearch) {
+        Router.push({
+          pathname: "/search",
+          query: {
+            redirect: redirect,
+          },
+        });
+      } else {
+        Router.push(`${redirect}`);
+      }
+    }, 1000);
+  }
+
   return (
     <div className={styles.new_note_container}>
       {/* Menu */}
       <div className={show()}>
         <ul>
           <li>Share</li>
-          <li>Delete</li>
-          <li>Add to Favorites</li>
+          <li onClick={handleNote}>
+            {Router.query.redirect == "/recycle" ? "Restore" : "Delete"}
+          </li>
+          <li>Add to Favorite</li>
         </ul>
       </div>
       {/* Title  */}
@@ -137,18 +202,42 @@ function Note({ note, id, redirect }: Props) {
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
-              const Notes = JSON.parse(localStorage.getItem("NOTES")!) as Note[]
-              const note = Notes.find(n => (n.id == id)||(n.id == Id) )
-              if(note?.title || note?.text){
-                Router.push(`${redirect}`);
+              startLoading("loading ...");
+              const Notes = JSON.parse(
+                localStorage.getItem("NOTES")!
+              ) as Note[];
+              const note = Notes.find((n) => n.id == id || n.id == Id);
+              if (note?.title || note?.text) {
+                if (Router.query.fromSearch) {
+                  Router.push({
+                    pathname: "/search",
+                    query: {
+                      redirect: redirect,
+                    },
+                  });
+                } else {
+                  Router.push(`${redirect}`);
+                }
                 localStorage.removeItem("CURRENTID");
-                return
+                return;
               } else {
-                const updatedNotes = Notes.filter(n => (id && n.id != id) || (Id && n.id != Id))
-                localStorage.setItem("NOTES", JSON.stringify(updatedNotes))
+                const updatedNotes = Notes.filter(
+                  (n) => (id && n.id != id) || (Id && n.id != Id)
+                );
+                localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
                 localStorage.removeItem("CURRENTID");
-                Router.push(`${redirect}`);
+                if (Router.query.fromSearch) {
+                  Router.push({
+                    pathname: "/search",
+                    query: {
+                      redirect: redirect,
+                    },
+                  });
+                } else {
+                  Router.push(`${redirect}`);
+                }
               }
+              finishLoading();
             }}
           >
             <Image
