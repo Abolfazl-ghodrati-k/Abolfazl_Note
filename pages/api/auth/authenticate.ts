@@ -24,7 +24,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
       await db.connect();
     } catch (error) {
-      res.send(error);
+      return res.status(200).json({message: "Database Error try again later"});
     }
 
     const { username, password } = req.body;
@@ -62,7 +62,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
         lastName: user?.lastName,
         token: token,
       });
-    } else {
+    } else if(!isSamePass) {
       return res.status(200).json({
         token: false,
         message: "Wrong username or password",

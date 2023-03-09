@@ -1,32 +1,30 @@
 import { useCallback, useRef, useState } from "react";
-  
+
 function preventDefault(e: Event) {
-  if ( !isTouchEvent(e) ) return;
-  
+  if (!isTouchEvent(e)) return;
+
   if (e.touches.length < 2 && e.preventDefault) {
     e.preventDefault();
   }
-};
+}
 
 export function isTouchEvent(e: Event): e is TouchEvent {
   return e && "touches" in e;
-};
+}
 
 interface PressHandlers<T> {
-  onLongPress: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void,
-  onClick?: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void,
+  onLongPress: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void;
+  onClick?: (e: React.MouseEvent<T> | React.TouchEvent<T>) => void;
 }
 
 interface Options {
-  delay?: number,
-  shouldPreventDefault?: boolean
+  delay?: number;
+  shouldPreventDefault?: boolean;
 }
 
 export default function useLongPress<T>(
   { onLongPress, onClick }: PressHandlers<T>,
-  { delay = 1000, shouldPreventDefault = true }
-  : Options
-  = {}
+  { delay = 1000, shouldPreventDefault = true }: Options = {}
 ) {
   const [longPressTriggered, setLongPressTriggered] = useState(false);
   const timeout = useRef<NodeJS.Timeout>();
@@ -35,15 +33,13 @@ export default function useLongPress<T>(
   const start = useCallback(
     (e: React.MouseEvent<T> | React.TouchEvent<T>) => {
       e.persist();
-      const clonedEvent = {...e};
-      
-      if (shouldPreventDefault && e.target) {
-        e.target.addEventListener(
-          "touchend",
-          preventDefault,
-          { passive: false }
-        );
-        target.current = e.target;
+      const clonedEvent = { ...e };
+
+      if (shouldPreventDefault && e?.target) {
+        e.target.addEventListener("touchend", preventDefault, {
+          passive: false,
+        });
+        target.current = e?.target;
       }
 
       timeout.current = setTimeout(() => {
@@ -54,7 +50,8 @@ export default function useLongPress<T>(
     [onLongPress, delay, shouldPreventDefault]
   );
 
-  const clear = useCallback((
+  const clear = useCallback(
+    (
       e: React.MouseEvent<T> | React.TouchEvent<T>,
       shouldTriggerClick = true
     ) => {
@@ -72,9 +69,15 @@ export default function useLongPress<T>(
 
   return {
     onMouseDown: (e: React.MouseEvent<T>) => start(e),
-    onTouchStart: (e: React.TouchEvent<T>) => start(e),
+    onTouchStart: (e: React.TouchEvent<T>) => {
+      start(e);
+      console.log("touching");
+    },
     onMouseUp: (e: React.MouseEvent<T>) => clear(e),
-    onMouseLeave: (e: React.MouseEvent<T>) => clear(e, false),
-    onTouchEnd: (e: React.TouchEvent<T>) => clear(e)
+    // onMouseLeave: (e: React.MouseEvent<T>) => clear(e),
+    onTouchEnd: (e: React.TouchEvent<T>) => {
+      clear(e);
+      console.log("clicked");
+    },
   };
-};
+}

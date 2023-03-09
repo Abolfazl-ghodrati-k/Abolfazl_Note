@@ -2,7 +2,7 @@ import React, { useEffect, useState, FormEvent } from "react";
 import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
-import { User } from "./_types";
+import { Note, User } from "./_types";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import useLoading from "../hooks/useLoading";
 // import usePwa from "../hooks/usePwa";
@@ -14,7 +14,6 @@ export type ErrorTypo = {
 };
 
 function LoginComponent() {
-  const [pageLoading, setpageLoading] = useState(true);
   const [mode, setmode] = useState("login");
   const [errors, seterrors] = useState<ErrorTypo>();
   const [username, Setusername] = useState<string>("");
@@ -37,19 +36,18 @@ function LoginComponent() {
     setmode(newMode);
   }
 
-  const {startLoading, finishLoading} = useLoading()
+  const { startLoading, finishLoading } = useLoading();
 
   useEffect(() => {
-    startLoading('Validating ...')
-    console.log(userService.userValue)
+    startLoading("Validating ...");
+    console.log(userService.userValue);
     Setusername("");
     Setpassword("");
     SetpasRepeat("");
     if (userService.userValue?.token) {
       Router.push("/home");
     } else {
-      finishLoading()
-      setpageLoading(false);
+      finishLoading();
     }
   }, [mode]);
 
@@ -59,8 +57,11 @@ function LoginComponent() {
     console.log(isValid);
     if (isValid) {
       if (mode == "signup") {
-        startLoading('Signing up...✌️😒')
-        const user = await userService.signup(username, password);
+        startLoading("Signing up...✌️😒");
+        const user = (await userService.signup(
+          username,
+          password
+        )) as unknown as any;
         if (user.message) {
           seterror(user.message);
           setTimeout(() => {
@@ -68,20 +69,29 @@ function LoginComponent() {
           }, 3000);
         } else {
           Router.push("/home");
-          finishLoading()
+          finishLoading();
         }
       } else {
-        startLoading('Logging in ... Welcome😁😘')
-        const user = await userService.login(username, password);
-        console.log(user)
+        startLoading("Logging in ... Welcome😁😘");
+        const user = (await userService.login(
+          username,
+          password
+        )) as unknown as any;
+        console.log(user);
         if (user.token) {
           const { savedNotes, deletedNotes } = await recieveNotes();
           localStorage.setItem("NOTES", JSON.stringify(savedNotes));
           localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
           Router.push("/home");
-          finishLoading()
+          finishLoading();
         } else {
-          seterror(user.message ? user.message : user.code? "Error try again Later or enter as a guest": "Unknown Error!");
+          seterror(
+            user.message
+              ? user.message
+              : user.code
+              ? "Error try again Later or enter as a guest"
+              : "Unknown Error!"
+          );
           setTimeout(() => {
             seterror("");
           }, 3000);
@@ -133,46 +143,42 @@ function LoginComponent() {
     return true;
   }
 
-  if (pageLoading) {
-    return <div>loading ...</div>;
-  } else {
-    return (
-      <div className={`app app--is-${mode}`}>
-        <div
-          className={`form-block-wrapper form-block-wrapper--is-${mode}`}
-        ></div>
-        <section className={`form-block form-block--is-${mode}`}>
-          <header className="form-block__header">
-            <h1>{mode === "login" ? "Welcome back!" : "Sign up"}</h1>
-            <div className="form-block__toggle-block">
-              <span>
-                {mode === "login" ? "Don't" : "Already"} have an account? Click
-                here &#8594;
-              </span>
-              <input id="form-toggler" type="checkbox" onClick={toggleMode} />
-              <label htmlFor="form-toggler"></label>
-            </div>
-          </header>
-          <LoginForm
-            mode={mode}
-            onSubmit={onSubmit}
-            errors={errors}
-            Login_props={Login_props}
-            seterrors={seterrors}
-          />
-          {error && (
-            <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
-          )}
-        </section>
-      </div>
-    );
-  }
+  return (
+    <div className={`app app--is-${mode}`}>
+      <div
+        className={`form-block-wrapper form-block-wrapper--is-${mode}`}
+      ></div>
+      <section className={`form-block form-block--is-${mode}`}>
+        <header className="form-block__header">
+          <h1>{mode === "login" ? "Welcome back!" : "Sign up"}</h1>
+          <div className="form-block__toggle-block">
+            <span>
+              {mode === "login" ? "Don't" : "Already"} have an account? Click
+              here &#8594;
+            </span>
+            <input id="form-toggler" type="checkbox" onClick={toggleMode} />
+            <label htmlFor="form-toggler"></label>
+          </div>
+        </header>
+        <LoginForm
+          mode={mode}
+          onSubmit={onSubmit}
+          errors={errors}
+          Login_props={Login_props}
+          seterrors={seterrors}
+        />
+        {error && (
+          <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
+        )}
+      </section>
+    </div>
+  );
 }
 
 export async function recieveNotes() {
-  const notes = await fetchWrapper.get("/api/notes");
-  const savedNotes = notes[0].Notes;
-  const deletedNotes = notes[0].deletedNotes;
+  const notes = (await fetchWrapper.get("/api/notes")) as unknown as any;
+  const savedNotes = notes[0]?.Notes;
+  const deletedNotes = notes[0]?.deletedNotes;
   return { savedNotes, deletedNotes };
 }
 

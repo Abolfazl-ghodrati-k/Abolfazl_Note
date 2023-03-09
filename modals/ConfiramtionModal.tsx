@@ -23,7 +23,7 @@ function ConfiramtionModal() {
           }}
         >
           {text.split("\n").map((part,index) => (
-            <p style={{fontSize: index==1? '1.2rem': '1.4rem',color: index==1? 'gray': 'white'}}>{part}</p>
+            <p style={{fontSize: index==1? '1.2rem': '1.4rem',color: index==1? 'gray': 'white'}} key={part}>{part}</p>
           ))}
         </div>
         <div className={styles.buttons}>

@@ -10,10 +10,13 @@ import { Color } from "@tiptap/extension-color";
 import useIsToday from "../../hooks/useIsToday";
 import BulletList from "@tiptap/extension-bullet-list";
 import ListItem from "@tiptap/extension-list-item"
+import useLongPress from "../../hooks/useLongPress";
 
 type NoteCardProps = {
   selectedNotes?: Note[] | undefined;
   onSelecting?: boolean;
+  setonDelete: React.Dispatch<React.SetStateAction<boolean>>
+  selectNote: (note: Note) => void
 } & Note;
 
 function NoteCard({
@@ -24,6 +27,8 @@ function NoteCard({
   date,
   selectedNotes,
   onSelecting,
+  setonDelete,
+  selectNote
 }: NoteCardProps) {
   const [selected, setselected] = useState<boolean>();
   const [Title, setTitle] = useState(title);
@@ -49,6 +54,25 @@ function NoteCard({
     content: `${TEXT ?? ""}`,
   });
   const isToday = useIsToday(date);
+  
+
+  const backspaceLongPress = useLongPress({
+    onLongPress(e) {
+      if (onSelecting) {
+        return;
+      }
+      else {
+        setonDelete(true)
+      }
+    },
+    onClick(e) {
+      const note = {
+        text,id,title,clock,date
+      }
+      selectNote(note)
+      // console.error("your calling meeeeee")
+    },
+  });
 
   useEffect(() => {
     setselected(() =>
@@ -66,7 +90,7 @@ function NoteCard({
 
 
   return (
-    <div className={styles.note_card_container} >
+    <div className={styles.note_card_container} {...backspaceLongPress} >
       {onSelecting && <div className={isSelected()}></div>}
       {Title ? (
         <div>

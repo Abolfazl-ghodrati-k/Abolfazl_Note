@@ -3,8 +3,9 @@ import styles from "./Components.module.css";
 import SideBarLink from "./SideBarLink";
 import Image from "next/image";
 import { Note, User } from "../pages/_types";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { FcSynchronize } from "react-icons/fc";
+import { FiLogOut } from "react-icons/fi";
 import { MdSystemUpdateAlt } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
@@ -26,6 +27,8 @@ function SideBar({ showSidebar, setNotes }: Props) {
   const [User, setUser] = useState<User>();
   const { startLoading, finishLoading } = useLoading();
   const { openmodal, isYes, sethalat, halat } = useModal();
+
+  const router = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
@@ -57,16 +60,16 @@ function SideBar({ showSidebar, setNotes }: Props) {
     startLoading("syncing data...");
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
-    const res = await fetchWrapper.post("/api/sync", {
+    const res = (await fetchWrapper.post("/api/sync", {
       Notes,
       deletedNotes,
       username: userService.userValue.username,
-    });
+    })) as unknown as any;
     finishLoading();
     if (res?.saved) {
       toast.success("your notes updated successfully");
-      const updatedNotes = res.DataStorage.Notes;
-      const updatedDeletedNotes = res.DataStorage.deletedNotes;
+      const updatedNotes = res?.DataStorage?.Notes;
+      const updatedDeletedNotes = res?.DataStorage.deletedNotes;
       setstoredNotesCount(updatedNotes.length);
       setdeletedNotesCount(updatedDeletedNotes.length);
       const route = Router.asPath;
@@ -137,12 +140,15 @@ function SideBar({ showSidebar, setNotes }: Props) {
         />
         <hr />
         {User?.guest ? (
-          <div className={styles.control_pannel}>
-            <CgProfile size={25} color="white" />
-            <Link href={"/"} style={{ color: "white" }}>
-              Create Account for Free or SignIn
-            </Link>
-          </div>
+          <>
+            <div className={styles.control_pannel}>
+              <CgProfile size={25} color="white" />
+              <Link href={"/"} style={{ color: "white" }}>
+                Create Account for Free or SignIn
+              </Link>
+            </div>
+            <hr />
+          </>
         ) : (
           <>
             <div>
@@ -162,7 +168,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
                 <div>Sync Notes</div>
               </button>
             </div>
-            <div>
+            <div style={{ marginBottom: "10px" }}>
               <button
                 className={`${styles.control_pannel} ${styles.functions}`}
                 onClick={async () => {
@@ -220,7 +226,9 @@ function SideBar({ showSidebar, setNotes }: Props) {
                         JSON.stringify(DeletedNotes)
                       );
                       toast.dark("notes updated successfully");
-                    } else {return}
+                    } else {
+                      return;
+                    }
                   }
                 }}
               >
@@ -228,8 +236,19 @@ function SideBar({ showSidebar, setNotes }: Props) {
                 <div>recieve Notes</div>
               </button>
             </div>
+            <hr />
           </>
         )}
+        <button
+          className={`${styles.control_pannel} ${styles.functions}`}
+          onClick={() => {
+            userService.logout();
+            router.push("/");
+          }}
+        >
+          <FiLogOut size={25} color={"white"} />
+          <div>{userService?.userValue?.guest ? 'Exit': 'Sign Out'}</div>
+        </button>
       </div>
     </div>
   );

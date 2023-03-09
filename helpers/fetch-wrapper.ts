@@ -18,7 +18,7 @@ async function get(url: string) {
     headers: authHeader(url) as HeadersInit | undefined,
   };
   // return authHeader(url)
-    return fetch(url, requestOptions).then(handleResponse);
+  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
   
 }
 
@@ -29,7 +29,7 @@ async function post(url: string, body: {} | string) {
     credentials: "include" as RequestCredentials,
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
 }
 
 async function put(url: string, body: {} | string) {
@@ -38,7 +38,7 @@ async function put(url: string, body: {} | string) {
     headers: { "Content-Type": "application/json", ...authHeader(url) as HeadersInit | undefined },
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
@@ -47,7 +47,7 @@ async function _delete(url: string) {
     method: "DELETE",
     headers: authHeader(url) as HeadersInit | undefined,
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
 }
 
 // helper functions
@@ -67,7 +67,24 @@ function authHeader(url: string) {
 function handleAuth(response: any) {
     return response
 }
-
+function timeoutPromise(ms: number | undefined= 10000, promise: Promise<unknown>) {
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject({message: "promise rejected"})
+    }, ms);
+    promise.then(
+      (res: any) => {
+        clearTimeout(timeoutId);
+        resolve(res);
+      },
+      (err: any) => {
+        clearTimeout(timeoutId);
+        reject(err);
+      }
+    );
+  }
+)
+}
 function handleResponse(response: any) {
   // return response;
   return response.text().then((text: string) => {

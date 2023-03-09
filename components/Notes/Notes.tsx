@@ -22,7 +22,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   const [onDelete, setonDelete] = useState(false);
   const [onFavorite, setonFavorite] = useState(false);
   const [selectedNotes, setselectedNotes] = useState<Note[]>([]);
-  const [note, setnote] = useState<Note>()
+  const [note, setnote] = useState<Note|null>(null)
 
   const ShowNote = (id: string) => {
     Router.push({
@@ -46,13 +46,13 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
 
   const selectNote = (note: Note) => {
     if (!onDelete && !onFavorite) {
-      ShowNote(note.id)
+      ShowNote(note?.id)
     } else {
-      const is_selected = isSelected(note.id);
+      const is_selected = isSelected(note?.id);
       console.log(is_selected);
       if (is_selected) {
-        const filteredNotes = selectedNotes.filter(
-          (selectednote) => selectednote.id != note.id
+        const filteredNotes = selectedNotes?.filter(
+          (selectednote) => selectednote?.id != note?.id
         );
         console.log(`filterednotes ${filteredNotes}`);
         setselectedNotes([...filteredNotes]);
@@ -67,12 +67,12 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     localStorage.removeItem("CURRENTID");
     if (Notes) {
       console.log(Notes);
-      const updatedNotes = Notes.filter((n) => {
+      const updatedNotes = Notes?.filter((n) => {
         if (n?.text || n?.title) {
           return n;
         }
       });
-      if (updatedNotes?.length == Notes.length) return;
+      if (updatedNotes?.length == Notes?.length) return;
       else {
         setNotes(updatedNotes);
         localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
@@ -84,19 +84,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     removeJunkNote();
   }, [Notes]);
 
-  const backspaceLongPress = useLongPress({
-    onLongPress(e) {
-      if (onDelete || onFavorite) {
-        return;
-      }
-      else {
-        setonDelete(true)
-      }
-    },
-    onClick(e) {
-      selectNote(note!)
-    },
-  });
+  
 
   return (
     <div
@@ -146,8 +134,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
                 <div
                   className={styles.note_card}
                   key={note?.id}
-                  onClick={(e) => setnote(note)}
-                  {...backspaceLongPress}
                 >
                   <NoteCard
                     onSelecting={onDelete || onFavorite}
@@ -157,6 +143,8 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
                     clock={note?.clock}
                     date={note?.date}
                     text={note?.text}
+                    setonDelete={setonDelete}
+                    selectNote={selectNote}
                   />
                 </div>
               )

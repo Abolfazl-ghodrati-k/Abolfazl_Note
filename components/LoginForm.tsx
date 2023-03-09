@@ -23,6 +23,8 @@ function LoginForm({ mode, onSubmit, errors, Login_props, seterrors }: Props) {
 
   function enterAsGuest() {
     userService.asGuest()
+    localStorage.removeItem("NOTES")
+    localStorage.removeItem("DELETED_NOTES")
     Router.push('/home')
   }
 

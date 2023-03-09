@@ -34,7 +34,6 @@ const App = observer(({ Component, pageProps }: CustomAppProps) => {
           <ConfiramtionModal />
           {Component.auth ? (
             <AuthControll>
-              {" "}
               <Component {...pageProps} />
             </AuthControll>
           ) : (
@@ -68,7 +67,7 @@ const AuthControll = ({ children }: Props) => {
     if (user?.guest) {
       setres(user);
     } else if (!user?.guest) {
-      (await userService.getAll().then((response) => {
+      (await userService.getAll().then((response: any|unknown) => {
         if (response?.message?.username) {
           setres(response);
         } else {
@@ -79,14 +78,14 @@ const AuthControll = ({ children }: Props) => {
     }
   }, []);
 
-  if (loading) {
-    return null;
-  } else if (res?.user?.guest || res?.message?.username) {
-    return <>{children}</>;
-  } else {
-    // userService.logout();
-    return null;
-  }
+  return (
+    <>
+      {loading && <div>loading...</div>}
+      {res?.guest && children}
+      {res?.message?.username && children}
+      {JSON.stringify(res)}
+    </>
+  )
   //  if (res?.user?.guest) {
   //   return <>{children}</>;
   // } else if (res?.message?.username) {
