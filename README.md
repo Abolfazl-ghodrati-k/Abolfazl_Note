@@ -31,7 +31,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## api routes
 
- - '/api/auth' : will authenticate user by [`JWT Token`]() and return his/her username if token is valid
+ - '/api/auth' : will authenticate user by [`JWT Token`](https://jwt.io/) and return his/her username if token is valid
  - '/api/auth/authenticate': will return a token if entered username and pass is valid and matches( simple login )
  - '/api/signup' : will sign up based on entered username and password and return a token
  - '/api/sync': will owerrite notes in your database with your saved notes in app
@@ -47,7 +47,7 @@ V1.1.0
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font. <br />
 This project uses [`PWA`](https://web.dev/progressive-web-apps/) to make app installable and available in offline mode. <br />
 this project has Guest mode available for those who dont want to have notes on other devices!
-this project is using [`JWT`]() an authentication service
+this project is using [`JWT`](https://jwt.io/) an authentication service
 
 ## License
 
