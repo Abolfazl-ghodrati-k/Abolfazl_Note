@@ -2,7 +2,7 @@
 
 Abolfaz Note is a note app which help's you in remembering things.
 
-## Installation
+# Installation
 
 Head Over to [`Abolfaz Note`](https://abolfazl-note.vercel.app) to Download the app <br />
 ( Dont worry its a PWA app not that difficult to install 😁✌️ )
