@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import styles from "../pages/newNote/NewNote.module.css";
 import TipTap from "./TipTap";
@@ -61,7 +61,8 @@ function Note({ note, id, redirect }: Props) {
       return "";
     }
   });
-
+  
+  const router = useRouter()
   function show() {
     if (showMenu) {
       return styles.opened_menu;
@@ -124,7 +125,7 @@ function Note({ note, id, redirect }: Props) {
   const { startLoading, finishLoading } = useLoading();
 
   function handleNote() {
-    switch (Router.query.redirect) {
+    switch (router.query.redirect) {
       case "/recycle":
         restoreNote();
         break;
@@ -148,15 +149,15 @@ function Note({ note, id, redirect }: Props) {
     localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
     toast.dark("note deleted successfully");
     setTimeout(() => {
-      if (Router.query.fromSearch) {
-        Router.push({
+      if (router.query.fromSearch) {
+        router.push({
           pathname: "/search",
           query: {
             redirect: redirect,
           },
         });
       } else {
-        Router.push(`${redirect}`);
+        router.push(`${redirect}`);
       }
     }, 1000);
   }
@@ -171,15 +172,15 @@ function Note({ note, id, redirect }: Props) {
     localStorage.setItem("NOTES", JSON.stringify(Notes));
     toast.dark("note restored successfully");
     setTimeout(() => {
-      if (Router.query.fromSearch) {
-        Router.push({
+      if (router.query.fromSearch) {
+        router.push({
           pathname: "/search",
           query: {
             redirect: redirect,
           },
         });
       } else {
-        Router.push(`${redirect}`);
+        router.push(`${redirect}`);
       }
     }, 1000);
   }
@@ -191,7 +192,7 @@ function Note({ note, id, redirect }: Props) {
         <ul>
           <li>Share</li>
           <li onClick={handleNote}>
-            {Router.query.redirect == "/recycle" ? "Restore" : "Delete"}
+            {router.query.redirect == "/recycle" ? "Restore" : "Delete"}
           </li>
           <li>Add to Favorite</li>
         </ul>
@@ -208,15 +209,15 @@ function Note({ note, id, redirect }: Props) {
               ) as Note[];
               const note = Notes.find((n) => n.id == id || n.id == Id);
               if (note?.title || note?.text) {
-                if (Router.query.fromSearch) {
-                  Router.push({
+                if (router.query.fromSearch) {
+                  router.push({
                     pathname: "/search",
                     query: {
                       redirect: redirect,
                     },
                   });
                 } else {
-                  Router.push(`${redirect}`);
+                  router.push(`${redirect}`);
                 }
                 localStorage.removeItem("CURRENTID");
                 return;
@@ -226,15 +227,15 @@ function Note({ note, id, redirect }: Props) {
                 );
                 localStorage.setItem("NOTES", JSON.stringify(updatedNotes));
                 localStorage.removeItem("CURRENTID");
-                if (Router.query.fromSearch) {
-                  Router.push({
+                if (router.query.fromSearch) {
+                  router.push({
                     pathname: "/search",
                     query: {
                       redirect: redirect,
                     },
                   });
                 } else {
-                  Router.push(`${redirect}`);
+                  router.push(`${redirect}`);
                 }
               }
               finishLoading();
