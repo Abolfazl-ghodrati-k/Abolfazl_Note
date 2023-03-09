@@ -46,7 +46,7 @@ V1.1.0
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font. <br />
 This project uses [`PWA`](https://web.dev/progressive-web-apps/) to make app installable and available in offline mode. <br />
-this project has Guest mode available for those who dont want to have notes on other devices!
+this project has Guest mode available for those who dont want to have notes on other devices! <br />
 this project is using [`JWT`](https://jwt.io/) an authentication service
 
 ## License
