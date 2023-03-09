@@ -46,7 +46,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
 
   const selectNote = (note: Note) => {
     if (!onDelete && !onFavorite) {
-      ShowNote(note.id);
+      ShowNote(note.id)
     } else {
       const is_selected = isSelected(note.id);
       console.log(is_selected);

@@ -25,9 +25,6 @@ const ModalContextWrapper = ({ children }: Props) => {
   const [halat, sethalat] = useState<"yes" | "no" | "bitch">("bitch");
   const [yes, setyes] = useState(false)
   const [no, setno] = useState(false)
-//   const [resolve, setresolve] = useState<(value: boolean) => void>()
-//   const [resolve, setresolve] = useState<(value: boolean) => void>()
-//   const [resolve, setresolve] = useState<(value: boolean) => void>()
 
   // Resolve from outside
   const isYes = () =>  new Promise<boolean>((resolve, reject) => {
