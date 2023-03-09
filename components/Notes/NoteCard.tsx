@@ -9,15 +9,20 @@ import TextStyle from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import useIsToday from "../../hooks/useIsToday";
 import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item"
+import ListItem from "@tiptap/extension-list-item";
 import useLongPress from "../../hooks/useLongPress";
 
 type NoteCardProps = {
+  text: string | undefined;
+  id: string | undefined;
+  title: string | undefined;
+  clock: string | undefined;
+  date: string | undefined;
   selectedNotes?: Note[] | undefined;
   onSelecting?: boolean;
-  setonDelete: React.Dispatch<React.SetStateAction<boolean>>
-  selectNote: (note: Note) => void
-} & Note;
+  setonDelete?: React.Dispatch<React.SetStateAction<boolean>>;
+  selectNote?: (note: Note) => void;
+};
 
 function NoteCard({
   text,
@@ -28,18 +33,19 @@ function NoteCard({
   selectedNotes,
   onSelecting,
   setonDelete,
-  selectNote
+  selectNote,
 }: NoteCardProps) {
   const [selected, setselected] = useState<boolean>();
   const [Title, setTitle] = useState(title);
   const [Clock, setClock] = useState(clock);
   const [TEXT, setTEXT] = useState(() => {
-    if (text?.length > 100) {
+    if (text && text?.length > 100) {
       return text?.substring(0, 100) + " ...";
     } else {
       return text;
     }
   });
+
   const editor = useEditor({
     extensions: [
       Document,
@@ -54,23 +60,24 @@ function NoteCard({
     content: `${TEXT ?? ""}`,
   });
   const isToday = useIsToday(date);
-  
 
   const backspaceLongPress = useLongPress({
     onLongPress(e) {
       if (onSelecting) {
         return;
-      }
-      else {
-        setonDelete(true)
+      } else {
+        setonDelete ?  setonDelete(true): null
       }
     },
     onClick(e) {
       const note = {
-        text,id,title,clock,date
-      }
-      selectNote(note)
-      // console.error("your calling meeeeee")
+        text,
+        id,
+        title,
+        clock,
+        date,
+      } as Note;
+      selectNote ?  selectNote(note) :  null
     },
   });
 
@@ -78,7 +85,7 @@ function NoteCard({
     setselected(() =>
       selectedNotes?.find((note) => note.id == id) ? true : false
     );
-  },[selectedNotes]);
+  }, [selectedNotes]);
 
   function isSelected() {
     if (selected) {
@@ -88,14 +95,13 @@ function NoteCard({
     }
   }
 
-
   return (
-    <div className={styles.note_card_container} {...backspaceLongPress} >
+    <div className={styles.note_card_container} {...backspaceLongPress}>
       {onSelecting && <div className={isSelected()}></div>}
       {Title ? (
         <div>
           <h1 className={styles.note_card_title}>{Title}</h1>
-          <p className={styles.note_card_date}>{isToday ? Clock: date}</p>
+          <p className={styles.note_card_date}>{isToday ? Clock : date}</p>
         </div>
       ) : (
         <p className={styles.note_card_date}>{date}</p>

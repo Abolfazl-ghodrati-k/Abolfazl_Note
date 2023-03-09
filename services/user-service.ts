@@ -3,6 +3,7 @@ import getConfig from "next/config";
 import {v4 as uuid} from "uuid"
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
+import { User } from "../pages/_types";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `/api/auth`;
@@ -26,7 +27,7 @@ async function login(username: string, password: string) {
   const user = await fetchWrapper.post(`/api/auth/authenticate`, {
     username,
     password,
-  });
+  }) as unknown as any 
   user.guest = false
   // publish user to subscribers and store in local storage to stay logged in between page refreshes
   userSubject.next(user);
@@ -50,7 +51,7 @@ async function signup(username: string, password: string) {
   const user = await fetchWrapper.post(`${baseUrl}/signup`, {
     username,
     password,
-  });
+  }) as any;
   user.guest = false
 
   userSubject.next(user);

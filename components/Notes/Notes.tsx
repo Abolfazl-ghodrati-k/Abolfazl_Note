@@ -130,7 +130,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
         >
           {Notes?.map(
             (note) =>
-              note && (
                 <div
                   className={styles.note_card}
                   key={note?.id}
@@ -147,7 +146,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
                     selectNote={selectNote}
                   />
                 </div>
-              )
+              
           )}
         </div>
         {/* Notes functionality */}
