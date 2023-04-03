@@ -6,6 +6,7 @@ Abolfazl Note is a Progressive Web Application (PWA) built with Next.js, TipTap,
 
 ![App Screenshot](https://user-images.githubusercontent.com/104020673/229557711-ca19d9e5-a715-442c-8e67-bf896dabf062.png?text=Main+Screen)
 ![App Screenshot](https://user-images.githubusercontent.com/104020673/229557469-86dc31f0-9d9a-47af-ab6a-0aa1cfbe41d9.png)
+![App Screenshot](https://user-images.githubusercontent.com/104020673/229559174-d963ad9d-61d3-4c80-9198-e57ea678bbfe.png)
 
 ## Getting Started
 
