@@ -2,6 +2,11 @@
 
 Abolfazl Note is a Progressive Web Application (PWA) built with Next.js, TipTap, and SCSS for taking and managing notes. The app features a clean and minimalistic user interface that looks similar to Samsung Note. With Abolfazl Note, you can take notes, update them, and save them to local storage or a MongoDB Atlas database. The app also uses JSON Web Tokens (JWT) for user authentication.
 
+## Screenshots
+
+![App Screenshot](https://user-images.githubusercontent.com/104020673/229557711-ca19d9e5-a715-442c-8e67-bf896dabf062.png?text=Main+Screen)
+![App Screenshot](https://user-images.githubusercontent.com/104020673/229557469-86dc31f0-9d9a-47af-ab6a-0aa1cfbe41d9.png)
+
 ## Getting Started
 
 To get started with Abolfazl Note, follow these steps:
