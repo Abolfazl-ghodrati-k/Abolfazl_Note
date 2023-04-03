@@ -1,54 +1,65 @@
-# Abolfaz Note
+# Abolfazl Note
 
-Abolfaz Note is a note app which help's you in remembering things.
-
-# Installation
-
-Head Over to [`Abolfaz Note`](https://abolfazl-note.vercel.app) to Download the app <br />
-( Dont worry its a PWA app not that difficult to install 😁✌️ )
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change. <br/>
-Please make sure to update tests as appropriate.
+Abolfazl Note is a Progressive Web Application (PWA) built with Next.js, TipTap, and SCSS for taking and managing notes. The app features a clean and minimalistic user interface that looks similar to Samsung Note. With Abolfazl Note, you can take notes, update them, and save them to local storage or a MongoDB Atlas database. The app also uses JSON Web Tokens (JWT) for user authentication.
 
 ## Getting Started
 
-First, run the development server:
+To get started with Abolfazl Note, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+1. Clone the repository: `git clone https://github.com/Abolfazl-ghodrati-k/abolfazl-note.git`
+2. Install dependencies: `npm install`
+3. Start the development server: `npm run dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You will face login page when you open [http://localhost:3000](http://localhost:3000) ! dont panic and enter as a guest if you dont want an account.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## api routes
-
- - '/api/auth' : will authenticate user by [`JWT Token`](https://jwt.io/) and return his/her username if token is valid
- - '/api/auth/authenticate': will return a token if entered username and pass is valid and matches( simple login )
- - '/api/signup' : will sign up based on entered username and password and return a token
- - '/api/sync': will owerrite notes in your database with your saved notes in app
- - '/api/notes' : will return all of your notes so if your in a new device and suddenly something happens (clearing browser storage, app crashes, ...) you can recieve         synced notes
- - '/api/hello' : used to push notification into pwa app ( coming soon )
- 
- all returned values are type-guarded so you can easily figure out whats going on...
+Once the development server is running, you can access the app by visiting `http://localhost:3000` in your browser.
 
 ## Features
 
-V1.1.0
+Abolfazl Note includes the following features:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font. <br />
-This project uses [`PWA`](https://web.dev/progressive-web-apps/) to make app installable and available in offline mode. <br />
-this project has Guest mode available for those who dont want to have notes on other devices! <br />
-this project is using [`JWT`](https://jwt.io/) an authentication service
+- Create, read, update, and delete notes
+- Save notes to local storage or a MongoDB Atlas database for offline and cross-device access
+- Minimalistic user interface that looks similar to Samsung Note
+- Supports TipTap for a rich text editing experience
+- Fully responsive design for desktop and mobile devices
+- Built-in `useLocalStorage` hook for local storage state management
+- Written in TypeScript for type safety
+- Uses JSON Web Tokens (JWT) for user authentication
+
+## Technologies Used
+
+Abolfazl Note was built using the following technologies:
+
+- Next.js
+- React
+- TipTap
+- SCSS
+- TypeScript
+- MongoDB Atlas
+- JSON Web Tokens (JWT)
+
+## API Routes
+
+Abolfazl Note includes the following API routes:
+
+| Route                  | Description                                                                                                   |
+|------------------------|---------------------------------------------------------------------------------------------------------------|
+| `/api/auth`            | Authenticates a user by JWT token and returns their username if the token is valid.                           |
+| `/api/auth/authenticate`| Returns a token if the entered username and password are valid and match (simple login).                    |
+| `/api/signup`          | Signs up a user based on the entered username and password and returns a token.                               |
+| `/api/sync`            | Overwrites notes in the database with the user's saved notes in the app.                                      |
+| `/api/notes`           | Returns all of the user's notes, so they can receive synced notes in a new device or after an app crash, etc. |
+| `/api/hello`           | Used to push notifications into the PWA app (coming soon).                                                    |
+
+## Contributing
+
+Contributions to Abolfazl Note are welcome! To contribute:
+
+1. Fork the repository
+2. Create a new branch: `git checkout -b feature/my-new-feature`
+3. Make your changes and commit them: `git commit -m "Add some feature"`
+4. Push your changes to the branch: `git push origin feature/my-new-feature`
+5. Create a new pull request
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+Abolfazl Note is licensed under the MIT License. See LICENSE for more information.
