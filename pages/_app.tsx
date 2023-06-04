@@ -17,7 +17,7 @@ import ModalContextWrapper from "../context/Confirm";
 import router from "next/router";
 
 type CustomAppProps = AppProps & {
-  Component: NextComponentType & { auth?: boolean }; // add auth type
+  Component: NextComponentType & { auth?: boolean }; // add auth typ
 };
 
 const App = observer(({ Component, pageProps }: CustomAppProps) => {
