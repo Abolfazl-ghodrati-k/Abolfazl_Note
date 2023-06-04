@@ -22,6 +22,9 @@ import { Note } from "../pages/_types";
 import { createNewNote, getDate } from "./Note";
 import { v4 as uuid } from "uuid";
 
+// Hooks
+import useKeyboardVisible from "../hooks/useKeyboardVisible"
+
 type Props = {
   id?: string;
   Id?: string;
@@ -30,6 +33,7 @@ type Props = {
 };
 
 export default function TipTap({ id, Id, setId, markdown }: Props) {
+
   const editor = useEditor({
     extensions: [
       Document,
@@ -55,10 +59,12 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
     editorProps: {
       attributes: {
         class:
-          " editor prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none",
+          "editor prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none",
       },
     },
   })!;
+
+  const keyboardVisible = useKeyboardVisible();
 
   const json = editor?.getHTML()!;
 
@@ -105,6 +111,15 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
       }
     }
   }
+
+  useEffect(() => {
+    if (keyboardVisible) {
+      const windowHeight = window.innerHeight;
+      document.documentElement.style.setProperty('--keyboardup', `-${windowHeight}px`);
+    } else {
+      document.documentElement.style.setProperty('--keyboardup', '0px');
+    }
+  }, [keyboardVisible]);
 
   if (!editor) {
     return null;

@@ -1,10 +1,11 @@
-import React, { useEffect, useState, FormEvent } from "react";
+import React, { useEffect, useState, FormEvent, useRef } from "react";
 import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
 import { Note, User } from "./_types";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import useLoading from "../hooks/useLoading";
+import Image from "next/image";
 // import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
@@ -181,5 +182,8 @@ export async function recieveNotes() {
   const deletedNotes = notes[0]?.deletedNotes;
   return { savedNotes, deletedNotes };
 }
+
+
+
 
 export default LoginComponent;

@@ -18,9 +18,11 @@ a {
   padding: 0;
   margin: 0;
 }
+
 .min-h-screen {
   min-height: 100vh;
 }
+
 .border {
   border: 1px solid black;
 }
@@ -33,6 +35,9 @@ $transitionEasing: cubic-bezier(0.36, 1, 0.62, 0.98);
 
 $background1: #433b7c;
 $background2: #2c497f;
+
+$keyboardup: 0px;
+
 
 // $yellow: #FF6542;
 $yellow: #ed6a5e;
@@ -323,7 +328,7 @@ input[type="checkbox"] {
 
 .editor {
   max-height: 80%;
-  overflow-y: auto;
+  line-height: 10px;
   background-color: black;
   padding: 5px;
   margin: 10px;
@@ -351,8 +356,8 @@ input[type="checkbox"] {
   gap: 5px;
   background-color: rgb(48, 48, 48);
   padding: 0 10px;
-  position: absolute;
-  bottom: 0;
+  position: fixed;
+  bottom: var(--keyboardup);
   left: 0;
   right: 0;
   z-index: 1000;

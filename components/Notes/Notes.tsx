@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import styles from "../../pages/home/Home.module.css";
-import NoteCard from "./NoteCard";
 import Router from "next/router";
 import SideBar from "../SideBar";
 import { Note } from "../../pages/_types";
 import NotesTitle from "./NotesTitle";
-import NotesNav from "./NotesNav";
 import NotesButton from "./NotesButton";
-import useLongPress from "../../hooks/useLongPress";
+import NoteLoadingIndicator from "./NoteLoadingIndicator";
+import NoteNavLoadingIndicator from "./NoteNavLoadingIndicator";
+
+const NoteCard = lazy(() => import("./NoteCard"));
+const NotesNav = lazy(() => import("./NotesNav"));
 
 type Props = {
   Notes: Note[] | [];
@@ -22,7 +24,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   const [onDelete, setonDelete] = useState(false);
   const [onFavorite, setonFavorite] = useState(false);
   const [selectedNotes, setselectedNotes] = useState<Note[]>([]);
-  const [note, setnote] = useState<Note|null>(null)
 
   const ShowNote = (id: string) => {
     Router.push({
@@ -46,7 +47,7 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
 
   const selectNote = (note: Note) => {
     if (!onDelete && !onFavorite) {
-      ShowNote(note?.id)
+      ShowNote(note?.id);
     } else {
       const is_selected = isSelected(note?.id);
       console.log(is_selected);
@@ -84,8 +85,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
     removeJunkNote();
   }, [Notes]);
 
-  
-
   return (
     <div
       className={
@@ -106,21 +105,23 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           setShowMenu={setShowMenu}
         />
         {/* NavBar */}
-        <NotesNav
-          title={title}
-          selectedNotes={selectedNotes}
-          setselectedNotes={setselectedNotes}
-          setShowMenu={setShowMenu}
-          setonDelete={setonDelete}
-          setonFavorite={setonFavorite}
-          setshowSidebar={setshowSidebar}
-          setshowSidebarCopy={setshowSidebarCopy}
-          onDelete={onDelete}
-          onFavorite={onFavorite}
-          showSidebar={showSidebar}
-          ShowMenu={ShowMenu}
-          styles={styles}
-        />
+        <Suspense fallback={<NoteNavLoadingIndicator />}>
+          <NotesNav
+            title={title}
+            selectedNotes={selectedNotes}
+            setselectedNotes={setselectedNotes}
+            setShowMenu={setShowMenu}
+            setonDelete={setonDelete}
+            setonFavorite={setonFavorite}
+            setshowSidebar={setshowSidebar}
+            setshowSidebarCopy={setshowSidebarCopy}
+            onDelete={onDelete}
+            onFavorite={onFavorite}
+            showSidebar={showSidebar}
+            ShowMenu={ShowMenu}
+            styles={styles}
+          />
+        </Suspense>
         {/* Notes */}
         <div
           className={styles.notes_container}
@@ -128,26 +129,23 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
             setShowMenu(false);
           }}
         >
-          {Notes?.map(
-            (note) =>
-                <div
-                  className={styles.note_card}
-                  key={note?.id}
-                >
-                  <NoteCard
-                    onSelecting={onDelete || onFavorite}
-                    selectedNotes={selectedNotes}
-                    id={note?.id}
-                    title={note?.title}
-                    clock={note?.clock}
-                    date={note?.date}
-                    text={note?.text}
-                    setonDelete={setonDelete}
-                    selectNote={selectNote}
-                  />
-                </div>
-              
-          )}
+          {Notes?.map((note) => (
+            <div className={styles.note_card} key={note?.id}>
+              <Suspense fallback={<NoteLoadingIndicator />}>
+                <NoteCard
+                  onSelecting={onDelete || onFavorite}
+                  selectedNotes={selectedNotes}
+                  id={note?.id}
+                  title={note?.title}
+                  clock={note?.clock}
+                  date={note?.date}
+                  text={note?.text}
+                  setonDelete={setonDelete}
+                  selectNote={selectNote}
+                />
+              </Suspense>
+            </div>
+          ))}
         </div>
         {/* Notes functionality */}
         <NotesButton
