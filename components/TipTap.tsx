@@ -21,9 +21,8 @@ import MenuBar from "./Menubar";
 import { Note } from "../pages/_types";
 import { createNewNote, getDate } from "./Note";
 import { v4 as uuid } from "uuid";
+import { useKeyboardOffset } from "../hooks/useKeyboardOffest";
 
-// Hooks
-import useKeyboardVisible from "../hooks/useKeyboardVisible"
 
 type Props = {
   id?: string;
@@ -53,7 +52,7 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
       ListItem,
       History.configure({
         depth: 10,
-      })
+      }),
     ],
     content: `${markdown ?? ""}`,
     editorProps: {
@@ -64,7 +63,8 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
     },
   })!;
 
-  const keyboardVisible = useKeyboardVisible();
+  const { keyBoardOffset } = useKeyboardOffset()
+  console.log(keyBoardOffset)
 
   const json = editor?.getHTML()!;
 
@@ -113,13 +113,11 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
   }
 
   useEffect(() => {
-    if (keyboardVisible) {
-      const windowHeight = window.innerHeight;
-      document.documentElement.style.setProperty('--keyboardup', `-${windowHeight}px`);
-    } else {
-      document.documentElement.style.setProperty('--keyboardup', '0px');
-    }
-  }, [keyboardVisible]);
+    document.documentElement.style.setProperty(
+      "--keyboardup",
+      `${keyBoardOffset}px`
+    );
+  }, [useKeyboardOffset]);
 
   if (!editor) {
     return null;
