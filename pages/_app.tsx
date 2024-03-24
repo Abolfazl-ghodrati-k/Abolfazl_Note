@@ -60,7 +60,14 @@ const AuthControll = ({ children }: Props) => {
     startLoading("authenticating ...");
     setError("");
     const user = JSON.parse(localStorage.getItem("user")!) as User;
-    authenticate(user).catch((err) => setError(err));
+    authenticate(user).catch((err) => {
+      if(typeof(err) === "string"){
+        setError(err)
+      }
+      else {
+        setError("Some thing went wrong, please  try again later.")
+      }
+    });
     finishLoading();
   }, []);
 

@@ -9,6 +9,7 @@ const { serverRuntimeConfig } = getConfig();
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";
+import { apiResponse } from "../../../helpers/api/apiResponse";
 
 export default apiHandler(handler);
 
@@ -24,7 +25,12 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
       await db.connect();
     } catch (error) {
-      return res.status(200).json({message: "Database Error try again later"});
+      return apiResponse<null>(
+        res,
+        500,
+        "Error on connecting to data base",
+        null
+      );
     }
 
     const { username, password } = req.body;
@@ -34,10 +40,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     // const user = users.find(u => u.username === username && u.password === password);
 
     if (!user) {
-      return res.status(200).json({
-        token: false,
-        message: "Wrong username or password",
-      });
+      return apiResponse<null>(res, 404, "No user Found", null);
     }
 
     const isSamePass = await bcrypt.compare(password, user.password);
@@ -55,18 +58,16 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       );
 
       // // return basic user details and token
-      return res.status(200).json({
+      const newUser = {
         id: user._id,
         username: user.username,
         firstName: user?.firstName,
         lastName: user?.lastName,
         token: token,
-      });
-    } else if(!isSamePass) {
-      return res.status(200).json({
-        token: false,
-        message: "Wrong username or password",
-      });
+      };
+      return apiResponse<null>(res, 200, "Hello dear user", null);
+    } else if (!isSamePass) {
+      return apiResponse<null>(res, 400, "Wrong username or password", null);
     }
   }
 }

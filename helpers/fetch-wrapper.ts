@@ -12,42 +12,53 @@ export const fetchWrapper = {
   delete: _delete,
 };
 
-async function get(url: string) {
+interface ApiResponse<T> {
+  status: number;
+  message: string;
+  data?: T;
+}
+
+async function get<T>(url: string) {
   const requestOptions = {
     method: "GET",
     headers: authHeader(url) as HeadersInit | undefined,
   };
   // return authHeader(url)
-  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
-  
+  return fetch(url, requestOptions).then((data) => data.json()).then(handleResponse<T>);
 }
 
-async function post(url: string, body: {} | string) {
+async function post<T>(url: string, body: {} | string) {
   const requestOptions = {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeader(url) as HeadersInit | undefined },
+    headers: {
+      "Content-Type": "application/json",
+      ...(authHeader(url) as HeadersInit | undefined),
+    },
     credentials: "include" as RequestCredentials,
     body: JSON.stringify(body),
   };
-  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
+  return fetch(url, requestOptions).then((data) => data.json()).then(handleResponse<T>);
 }
 
-async function put(url: string, body: {} | string) {
+async function put<T>(url: string, body: {} | string) {
   const requestOptions = {
     method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeader(url) as HeadersInit | undefined },
+    headers: {
+      "Content-Type": "application/json",
+      ...(authHeader(url) as HeadersInit | undefined),
+    },
     body: JSON.stringify(body),
   };
-  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
+  return fetch(url, requestOptions).then((data) => data.json()).then(handleResponse<T>);
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-async function _delete(url: string) {
+async function _delete<T>(url: string) {
   const requestOptions = {
     method: "DELETE",
     headers: authHeader(url) as HeadersInit | undefined,
   };
-  return timeoutPromise(10000,fetch(url, requestOptions).then(handleResponse))
+  return fetch(url, requestOptions).then((data) => data.json()).then(handleResponse<T>);
 }
 
 // helper functions
@@ -64,44 +75,13 @@ function authHeader(url: string) {
   }
 }
 
-function handleAuth(response: any) {
-    return response
-}
-function timeoutPromise(ms: number | undefined= 10000, promise: Promise<unknown>) {
-  return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject({message: "promise rejected"})
-    }, ms);
-    promise.then(
-      (res: any) => {
-        clearTimeout(timeoutId);
-        resolve(res);
-      },
-      (err: any) => {
-        clearTimeout(timeoutId);
-        reject(err);
-      }
-    );
+function handleResponse<T>(response: ApiResponse<T>) {
+  console.log(response)
+  if([401, 403, 400].includes(response.status)) {
+    userService.logout()
+    console.error(response)
+    return null
   }
-)
-}
-function handleResponse(response: any) {
-  // return response;
-  return response.text().then((text: string) => {
-      const data = text && JSON.parse(text);
 
-      if (!response.ok) {
-          if ([401, 403].includes(response.status)) {
-              // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-              // userService.logout();
-              // Router.push('/unAuthorized')
-              return response
-          }
-
-          const error = (data && data.message) || response.statusText;
-          return Promise.reject(error);
-      }
-
-      return data;
-  });
+  return response
 }

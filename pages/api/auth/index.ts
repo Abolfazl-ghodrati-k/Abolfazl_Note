@@ -4,11 +4,6 @@ import jwt from "jsonwebtoken";
 import getConfig from "next/config";
 const { serverRuntimeConfig } = getConfig();
 
-// users in JSON file for simplicity, store in a db for production applications
-interface JwtPayload {
-  token: string;
-}
-
 export default apiHandler(handler);
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -16,7 +11,9 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     case "GET":
       return getUsers();
     default:
-      return res.status(405).end(`Method ${req.method} Not Allowed`);
+      return res.status(405).json({
+        message: "Method not allowed"
+      });
   }
 
   function getUsers() {
@@ -25,12 +22,12 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     if (authorization) {
       token = authorization.split(" ")[1];
     } else {
-      return res.status(401).json({ message: "send token" });
+      return res.status(401).json({ message: "No token found" });
     }
     const response = jwt.verify(
       token,
       serverRuntimeConfig.secret
-    ) as JwtPayload;
+    );
 
     return res.status(200).json({ message: response });
   }

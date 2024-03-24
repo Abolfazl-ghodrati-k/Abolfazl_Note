@@ -21,7 +21,7 @@ function LoginComponent() {
   const [password, Setpassword] = useState<string>("");
   const [pasRepeat, SetpasRepeat] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
-  const [error, seterror] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const Login_props = {
     username,
@@ -45,7 +45,8 @@ function LoginComponent() {
     Setusername("");
     Setpassword("");
     SetpasRepeat("");
-    if (userService.userValue?.token) {
+    setError("")
+    if (userService.userValue?.token && userService.userValue.guest) {
       Router.push("/home");
     } else {
       finishLoading();
@@ -59,44 +60,25 @@ function LoginComponent() {
     if (isValid) {
       if (mode == "signup") {
         startLoading("Signing up...✌️😒");
-        const user = (await userService.signup(
-          username,
-          password
-        )) as unknown as any;
-        if (user.message) {
-          seterror(user.message);
-          setTimeout(() => {
-            seterror("");
-          }, 3000);
+        const { user, message } = await userService.signup(username, password);
+        if (!user) {
+          setError(message ?? "Error occured on server see the log.");
         } else {
           Router.push("/home");
           finishLoading();
         }
       } else {
         startLoading("Logging in ... Welcome😁😘");
-        const user = (await userService.login(
-          username,
-          password
-        )) as unknown as any;
-        console.log(user);
-        if (user.token) {
+        const { user, message } = await userService.login(username, password);
+        if (user) {
           const { savedNotes, deletedNotes } = await recieveNotes();
           localStorage.setItem("NOTES", JSON.stringify(savedNotes));
           localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
           Router.push("/home");
-          finishLoading();
         } else {
-          seterror(
-            user.message
-              ? user.message
-              : user.code
-              ? "Error try again Later or enter as a guest"
-              : "Unknown Error!"
-          );
-          setTimeout(() => {
-            seterror("");
-          }, 3000);
+          setError(message ?? "Error try again Later or enter as a guest");
         }
+        finishLoading();
       }
     }
   }
@@ -182,8 +164,5 @@ export async function recieveNotes() {
   const deletedNotes = notes[0]?.deletedNotes;
   return { savedNotes, deletedNotes };
 }
-
-
-
 
 export default LoginComponent;

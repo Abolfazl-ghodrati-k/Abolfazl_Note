@@ -9,18 +9,24 @@ const { serverRuntimeConfig } = getConfig();
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "../../../utils/db";
 import User from "../../../models/User";
-import { Types } from 'mongoose'
+import { Types } from "mongoose";
+import { apiResponse } from "../../../helpers/api/apiResponse";
 
 export default apiHandler(handler);
 
+export interface UserValue {
+  _id: Types.ObjectId;
+  firstName?: string;
+  lastName?: string;
+  username: string;
+  password: string;
+  token: string;
+}
 
-interface NewUser {
-  _id: Types.ObjectId
-  firstName?: string
-  lastName?: string
-  username: string
-  password: string
-  token: string
+interface ApiResponse<T> {
+  status: number;
+  message: string;
+  data?: T;
 }
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -32,17 +38,19 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   async function createUser() {
-    await db.connect();
-    
+    try {
+      await db.connect();
+    } catch (error) {
+      return apiResponse(res, 500, "Error on connecting to Database", null);
+    }
+
     const { username } = req.body;
     const user = await User.findOne({ username });
-    
-    
-    if(user){
-      return res.status(200).send({message:"user name already exists"})
+
+    if (user) {
+      return apiResponse(res, 400, "Username already exists", null);
     }
-    
-    
+
     const hashedPass = await bcrypt.hash(req.body.password, 10);
 
     const token = await jwt.sign(
@@ -60,16 +68,22 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       username: req.body.username,
       password: hashedPass,
     });
-    var newuser = {...newUser._doc}
+    var newuser = { ...newUser._doc };
+    
     try {
       await newUser.save();
-      var SavedUser: NewUser = {
-        ...newuser, token
-      }
-      res.status(201).json({...SavedUser});
+      const savedUser: UserValue = {
+        ...newuser,
+        token,
+      };
+      return apiResponse<UserValue>(
+        res,
+        201,
+        "User saved successfully",
+        savedUser
+      );
     } catch (error) {
-      res.status(401).json({ message: error });
+      return apiResponse<null>(res, 401, "Error on saving user", null);
     }
-  
   }
 }

@@ -1,13 +1,14 @@
 import { BehaviorSubject } from "rxjs";
 import getConfig from "next/config";
-import {v4 as uuid} from "uuid"
+import { v4 as uuid } from "uuid";
 
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import { User } from "../pages/_types";
 
 const { publicRuntimeConfig } = getConfig();
 const baseUrl = `/api/auth`;
-const userSubject = new BehaviorSubject(
+
+const userSubject = new BehaviorSubject<User | null>(
   process.browser && JSON.parse(localStorage.getItem("user")!)
 );
 
@@ -24,40 +25,51 @@ export const userService = {
 };
 
 async function login(username: string, password: string) {
-  const user = await fetchWrapper.post(`/api/auth/authenticate`, {
-    username,
-    password,
-  }) as unknown as any 
-  user.guest = false
-  // publish user to subscribers and store in local storage to stay logged in between page refreshes
-  userSubject.next(user);
+  const response = await fetchWrapper.post<null | User>(
+    `/api/auth/authenticate`,
+    {
+      username,
+      password,
+    }
+  );
+  let user: null | User = null;
+
+  if (response?.data) {
+    userSubject.next(response.data);
+    user = response.data;
+  }
 
   localStorage.setItem("user", JSON.stringify(user));
 
-  return user;
+  return { user, message: response?.message };
 }
 
 function asGuest() {
   var user = {
     guest: true,
     username: "guest",
-    token: uuid()
   };
   userSubject.next(user);
   localStorage.setItem("user", JSON.stringify(user));
 }
 
 async function signup(username: string, password: string) {
-  const user = await fetchWrapper.post(`${baseUrl}/signup`, {
+  const response = await fetchWrapper.post<User | null>(`${baseUrl}/signup`, {
     username,
     password,
-  }) as any;
-  user.guest = false
+  });
+  let user: null | User = null;
 
-  userSubject.next(user);
+  if (response?.data) {
+    user = response.data;
+    user.guest = false;
+
+    userSubject.next(user);
+  }
+
   localStorage.setItem("user", JSON.stringify(user));
 
-  return user;
+  return { user, message: response?.message };
 }
 
 function logout() {

@@ -18,7 +18,13 @@
 .form-block {
   position: relative;
   margin: 100px auto 0;
-  max-width: 320px;
+  max-width: 280px;
+  @media only screen and (min-width: 400px)  {
+    max-width: 350px;
+  }
+  @media only screen and (min-width: 600px)  {
+    max-width: 500px;
+  }
   padding: 25px;
   background: rgba(255, 255, 255, 0.13);
   border-radius: 2 * $borderRadius;
@@ -36,6 +42,13 @@
 
 .form-block__toggle-block {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  @media only screen and (min-width: 400px) {
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+  }
   span {
     font-size: 13px;
     font-weight: 300;
@@ -44,22 +57,23 @@
 }
 
 .form-block__input-wrapper {
-  height: 2.5 * $inputHeight;
+  // height: 2.5 * $inputHeight;
   position: relative;
   margin-bottom: 2px;
   @include transition(all 0.25s $transitionEasing 0.1s);
   .form-block--is-signup & {
-    height: 3.5 * $inputHeight;
+    // height: 3.5 * $inputHeight;
     @include transition(all 0.5s $transitionEasing 0.05s);
   }
 }
 
 .form-group {
   &--signup {
-    position: absolute;
-    top: 0;
-    left: $offset;
-    width: 100%;
+    transform: translateX(150%);
+    // position: absolute;
+    // top: 0;
+    // left: $offset;
+    // width: 100%;
   }
 }
 
