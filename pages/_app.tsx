@@ -14,20 +14,19 @@ import useLoading from "../hooks/useLoading";
 import Router, { useRouter } from "next/router";
 import ConfiramtionModal from "../modals/ConfiramtionModal";
 import ModalContextWrapper from "../context/Confirm";
-import router from "next/router";
+import UnAuthorized from "./UnAuthorized";
 
 type CustomAppProps = AppProps & {
-  Component: NextComponentType & { auth?: boolean }; // add auth typ
+  Component: NextComponentType & { auth?: boolean }; // add auth type
 };
 
 const App = observer(({ Component, pageProps }: CustomAppProps) => {
-
   return (
     <>
       <Head>
         <title>Abolfaz Note</title>
       </Head>
-      
+
       <ModalContextWrapper>
         <ContextWrapper>
           <LoadingModal />
@@ -54,12 +53,14 @@ type Props = {
 
 const AuthControll = ({ children }: Props) => {
   const [res, setres] = useState<any>();
-  const { loading, startLoading, finishLoading } = useLoading();
+  const [error, setError] = useState("");
+  const { startLoading, finishLoading } = useLoading();
 
   useEffect(() => {
     startLoading("authenticating ...");
+    setError("");
     const user = JSON.parse(localStorage.getItem("user")!) as User;
-    authenticate(user).catch((err) => console.error);
+    authenticate(user).catch((err) => setError(err));
     finishLoading();
   }, []);
 
@@ -67,31 +68,20 @@ const AuthControll = ({ children }: Props) => {
     if (user?.guest) {
       setres(user);
     } else if (!user?.guest) {
-      (await userService.getAll().then((response: any|unknown) => {
+      (await userService.getAll().then((response: any | unknown) => {
         if (response?.message?.username) {
           setres(response);
         } else {
-          Router.push("/unAuthorized");
+          throw new Error("Authentication failed please login again.");
         }
-        // console.log(response.message)
       })) as unknown as any;
     }
   }, []);
 
-  return (
-    <>
-      {loading && <div>loading...</div>}
-      {res?.guest && children}
-      {res?.message?.username && children}
-      {JSON.stringify(res)}
-    </>
-  )
-  //  if (res?.user?.guest) {
-  //   return <>{children}</>;
-  // } else if (res?.message?.username) {
-  //   return <>{children}</>;
-  // } else {
-  //   userService.logout();
-  //   return null;
-  // }
+  if(error) {
+    userService.logout()
+    return <UnAuthorized error={error} />
+  }
+
+  return res?.guest || (res?.message?.username && children);
 };
