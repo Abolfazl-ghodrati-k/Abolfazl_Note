@@ -91,9 +91,9 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           : `${styles.note_app_container}`
       }
     >
-      {/* {showSidebar && (
+      {showSidebar && (
         <SideBar showSidebar={showSidebarCopy} setNotes={setNotes} />
-      )} */}
+      )}
       <div className={styles.note_app}>
         {/* Title */}
         <NotesTitle

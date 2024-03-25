@@ -1,19 +1,4 @@
-.modal_container {
-  min-width: 100vw;
-  min-height: 100vh;
-  background: rgb(1, 0, 17);
-  background: linear-gradient(
-    90deg,
-    rgba(1, 0, 17, 1) 5%,
-    rgba(1, 5, 33, 0.989233193277311) 35%,
-    rgba(1, 8, 38, 0.896796218487395) 100%
-  );
-  position: absolute;
-  z-index: 10000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 
 .hide_modal {
   display: none !important;
@@ -31,19 +16,6 @@
 }
 
 .confirm_modal_container {
-  min-width: 100vw;
-  min-height: 100vh;
-  background: rgb(75, 72, 116);
-  background: linear-gradient(
-    90deg,
-    rgba(24, 19, 95, 0.644) 5%,
-    rgba(13, 20, 70, 0.671) 35%,
-    rgba(7, 16, 58, 0.719) 100%
-  );
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  position: absolute;
-  z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -54,11 +26,6 @@
   min-width: 370px;
   min-height: 220px;
   padding: 10px;
-  background: #010529;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-    border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between ;
@@ -71,7 +38,6 @@
   align-items: center;
   min-height: 70px;
   padding: 0 50px 5px;
-
 }
 
 .yes_button{

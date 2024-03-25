@@ -203,7 +203,6 @@ function Note({ note, id, redirect }: Props) {
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
-              startLoading("loading ...");
               const Notes = JSON.parse(
                 localStorage.getItem("NOTES")!
               ) as Note[];
@@ -238,7 +237,6 @@ function Note({ note, id, redirect }: Props) {
                   router.push(`${redirect}`);
                 }
               }
-              finishLoading();
             }}
           >
             <Image

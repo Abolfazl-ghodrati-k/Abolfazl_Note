@@ -6,7 +6,7 @@ import Router, { useRouter } from "next/router";
 type Props = {
   icon: string;
   value: string;
-  count: string;
+  count: number;
   showSidebar: boolean;
   path: string
 };

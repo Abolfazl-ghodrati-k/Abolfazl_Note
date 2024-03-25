@@ -69,14 +69,15 @@ function LoginComponent() {
         startLoading("Logging in ... Welcome😁😘");
         const { user, message } = await userService.login(username, password);
         if (user) {
-          // const { savedNotes, deletedNotes } = await recieveNotes();
+          // const { savedNotes, deletedNotes } =
+           await recieveNotes();
           // localStorage.setItem("NOTES", JSON.stringify(savedNotes));
           // localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
           // Router.push("/home");
         } else {
           setError(message ?? "Error try again Later or enter as a guest");
         }
-        // finishLoading();
+        finishLoading();
       }
     }
   }

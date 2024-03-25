@@ -5,21 +5,14 @@ import { recieveNotes } from "..";
 
 function index() {
   const [notes, setNotes] = useState<Note[]>();
-  const [isPending, startTransition] = useTransition();
 
-  // useEffect(() => {
-  //   const stringedNotes = localStorage.getItem("NOTES");
-  //   if (stringedNotes) {
-  //     const jsonedNotes = JSON.parse(stringedNotes);
-  //     startTransition(() => {
-  //       setNotes(jsonedNotes);
-  //     });
-  //   }
-  // }, []);
-
-  // if(isPending) {
-  //   return <p>Loading notes.</p>
-  // }
+  useEffect(() => {
+    const stringedNotes = localStorage.getItem("NOTES");
+    if (stringedNotes) {
+      const jsonedNotes = JSON.parse(stringedNotes);
+      setNotes(jsonedNotes);
+    }
+  }, []);
 
   return (
     <NotesContainer title="All Notes" Notes={notes ?? []} setNotes={setNotes} />

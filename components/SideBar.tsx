@@ -14,34 +14,42 @@ import { userService } from "../services/user-service";
 import { toast } from "react-toastify";
 import { recieveNotes } from "../pages";
 import useLoading from "../hooks/useLoading";
+import { useModal } from "./ModalsManager/useModal";
+import { ConfirmModalOptions } from "../modals/ConfiramtionModal";
 
 type Props = {
   showSidebar: boolean;
   setNotes: React.Dispatch<React.SetStateAction<Note[] | undefined>>;
 };
 
+type NoteResponseType = {
+  notes: Note[];
+  deletedNotes: Note[];
+};
+
 function SideBar({ showSidebar, setNotes }: Props) {
-  const [storedNotesCount, setstoredNotesCount] = useState("");
-  const [deletedNotesCount, setdeletedNotesCount] = useState("");
-  const [User, setUser] = useState<User>();
+  const [storedNotesCount, setstoredNotesCount] = useState(0);
+  const [deletedNotesCount, setdeletedNotesCount] = useState(0);
+  const [user, setUser] = useState<User>();
   const { startLoading, finishLoading } = useLoading();
-  
+  const { addToModalsStack } = useModal<ConfirmModalOptions>();
+
   const syncData = async () => {
     startLoading("syncing data...");
-    const Notes = JSON.parse(localStorage.getItem("NOTES")!);
+    const notes = JSON.parse(localStorage.getItem("NOTES")!);
     const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
-    const res = (await fetchWrapper.post("/api/sync", {
-      Notes,
+    const res = await fetchWrapper.post<NoteResponseType>("/api/sync", {
+      notes,
       deletedNotes,
       username: userService.userValue?.username,
-    })) as unknown as any;
+    });
     finishLoading();
-    if (res?.saved) {
-      toast.success("your notes updated successfully");
-      const updatedNotes = res?.DataStorage?.Notes;
-      const updatedDeletedNotes = res?.DataStorage.deletedNotes;
-      setstoredNotesCount(updatedNotes.length);
-      setdeletedNotesCount(updatedDeletedNotes.length);
+    if (res && res.data) {
+      toast(res.message);
+      const updatedNotes = res.data.notes;
+      const updatedDeletedNotes = res.data?.deletedNotes;
+      setstoredNotesCount(updatedNotes?.length ?? 0);
+      setdeletedNotesCount(updatedDeletedNotes?.length ?? 0);
       const route = Router.asPath;
       switch (route) {
         case "/recycle":
@@ -60,11 +68,27 @@ function SideBar({ showSidebar, setNotes }: Props) {
       );
     } else {
       toast.error(
-        "updating failed! try again later; if the error remains contact developer O.O"
+        "Updating failed! try again later; if the error remains contact developer O.O"
       );
     }
   };
-  
+
+  const handleSyncNotes = async () => {
+    if (!navigator.onLine) {
+      toast.info("your offline, check internet connection and try again!");
+    } else {
+      addToModalsStack([
+        {
+          id: "confirm",
+          options: {
+            callBack: syncData,
+            body: "Are You sure about syncing notes? \r\n you can fetch them first",
+          },
+        },
+      ]);
+    }
+  };
+
   const router = useRouter();
 
   useEffect(() => {
@@ -86,7 +110,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
     >
       <div className={styles.sidebar_wrapper}>
         <div className={styles.sidebar_profile}>
-          <h2>{User?.username}</h2>
+          <h2>{user?.username}</h2>
           <div>
             <Image
               src="/Images/Icons/person.png"
@@ -111,7 +135,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
           count={deletedNotesCount}
         />
         <hr />
-        {User?.guest ? (
+        {user?.guest ? (
           <>
             <div className={styles.control_pannel}>
               <CgProfile size={25} color="white" />
@@ -126,15 +150,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
             <div>
               <button
                 className={`${styles.control_pannel} ${styles.functions}`}
-                onClick={() => {
-                  if (!navigator.onLine) {
-                    toast.info(
-                      "your offline, check internet connection and try again!"
-                    );
-                  } else {
-                    // decideTodo();
-                  }
-                }}
+                onClick={handleSyncNotes}
               >
                 <FcSynchronize size={25} color="white" />
                 <div>Sync Notes</div>
@@ -148,7 +164,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
                     toast.info(
                       "your offline, check internet connection and try again!"
                     );
-                  } 
+                  }
                   // else {
                   //   startLoading("Recieving saved Notes ...");
                   //   const { savedNotes, deletedNotes } = await recieveNotes();
@@ -220,7 +236,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
           }}
         >
           <FiLogOut size={25} color={"white"} />
-          <div>{userService?.userValue?.guest ? 'Exit': 'Sign Out'}</div>
+          <div>{userService?.userValue?.guest ? "Exit" : "Sign Out"}</div>
         </button>
       </div>
     </div>

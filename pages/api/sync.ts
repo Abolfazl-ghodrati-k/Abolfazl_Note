@@ -6,13 +6,9 @@ import User, { IUser } from "../../models/User";
 import { UpdateQuery } from "mongoose";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import getConfig from "next/config";
+import { apiResponse } from "../../helpers/api/apiResponse";
 
 const { serverRuntimeConfig } = getConfig();
-
-
-
-
-
 
 export default apiHandler(handler);
 
@@ -28,10 +24,10 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
       await db.connect();
     } catch (error) {
-      res.end(error);
+      return apiResponse(res, 500, "Error on connecting to databse", null);
     }
 
-    const { Notes, deletedNotes } = req.body;
+    const { notes, deletedNotes } = req.body;
     const token = req.headers.authorization?.split(" ")[1]!;
     // return res.send({token})
     const { username } = jwt.verify(
@@ -48,27 +44,24 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    if (Notes == 0 && deletedNotes == 0) {
-      return res.status(200).json({
-        saved: false,
-        message: "Nothing to save ... ^_^",
-      });
+    if (notes.length === 0 && deletedNotes.length === 0) {
+      return apiResponse(res, 403, "Nothing to save", null);
     }
 
-    var create: INotes = {};
+    var create: INotes | null = null;
     var update: UpdateQuery<INotes> = {};
 
-    if (Notes?.length != 0 && deletedNotes?.length != 0) {
-      create = { Notes, deletedNotes } as INotes;
-      update = { $set: { Notes, deletedNotes } };
+    if (notes?.length != 0 && deletedNotes?.length != 0) {
+      create = { notes, deletedNotes } as INotes;
+      update = { $set: { notes, deletedNotes } };
     }
 
-    if (Notes?.length != 0 && deletedNotes == 0) {
-      create = { Notes } as INotes;
-      update = { $set: { Notes }, $unset: { deletedNotes: 1 } };
+    if (notes?.length != 0 && deletedNotes == 0) {
+      create = { notes } as INotes;
+      update = { $set: { notes }, $unset: { deletedNotes: 1 } };
     }
 
-    if (Notes == 0 && deletedNotes?.length != 0) {
+    if (notes.length === 0 && deletedNotes?.length !== 0) {
       create = { deletedNotes } as INotes;
       update = { $set: { deletedNotes }, $unset: { Notes: 1 } };
     }
@@ -84,12 +77,11 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
     const username = user?.username;
     var DataStorage = await NOTES.findOneAndUpdate({}, update, {
       returnOriginal: false,
-
     }).populate({
       path: "user",
       match: { username },
     });
-    return res.send({ saved: true, DataStorage });
+    return apiResponse(res, 200, "Notes updated successfylly", DataStorage);
   }
 
   async function createDataStorage(create: INotes, user: IUser) {
@@ -98,14 +90,8 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       ...create,
       user,
     });
-    try {
-      await DataStorage.save();
-      return res.send({ saved: true, message: DataStorage });
-    } catch (error) {
-      res.status(401).send({
-        saved: false,
-        message: error,
-      });
-    }
+
+    await DataStorage.save();
+    return apiResponse(res, 200, "Notes updated successfylly", DataStorage);
   }
 }

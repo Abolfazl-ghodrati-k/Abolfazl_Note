@@ -64,7 +64,6 @@ export default function TipTap({ id, Id, setId, markdown }: Props) {
   })!;
 
   const { keyBoardOffset } = useKeyboardOffset()
-  console.log(keyBoardOffset)
 
   const json = editor?.getHTML()!;
 
