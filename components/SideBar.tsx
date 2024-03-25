@@ -14,7 +14,6 @@ import { userService } from "../services/user-service";
 import { toast } from "react-toastify";
 import { recieveNotes } from "../pages";
 import useLoading from "../hooks/useLoading";
-import useModal from "../hooks/useModal";
 
 type Props = {
   showSidebar: boolean;
@@ -26,36 +25,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
   const [deletedNotesCount, setdeletedNotesCount] = useState("");
   const [User, setUser] = useState<User>();
   const { startLoading, finishLoading } = useLoading();
-  const { openmodal, isYes, sethalat, halat } = useModal();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    setTimeout(() => {
-      sethalat("bitch");
-    }, 3000);
-  });
-
-  useEffect(() => {
-    (async () => {
-      const doit = await isYes();
-      if (doit) {
-        await syncData();
-      } else if (!doit) {
-        console.log("dont do it");
-      }
-    })();
-  }, [halat]);
-
-  useEffect(() => {
-    const Notes = JSON.parse(localStorage.getItem("NOTES")!);
-    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
-    const user = JSON.parse(localStorage.getItem("user")!);
-    setstoredNotesCount(Notes?.length);
-    setdeletedNotesCount(deletedNotes?.length);
-    setUser(user as User);
-  }, []);
-
+  
   const syncData = async () => {
     startLoading("syncing data...");
     const Notes = JSON.parse(localStorage.getItem("NOTES")!);
@@ -63,7 +33,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
     const res = (await fetchWrapper.post("/api/sync", {
       Notes,
       deletedNotes,
-      username: userService.userValue.username,
+      username: userService.userValue?.username,
     })) as unknown as any;
     finishLoading();
     if (res?.saved) {
@@ -94,15 +64,17 @@ function SideBar({ showSidebar, setNotes }: Props) {
       );
     }
   };
+  
+  const router = useRouter();
 
-  async function decideTodo() {
-    openmodal(
-      "Sure to owerrite notes in database?" +
-        "\n" +
-        "you can update notes first..."
-    );
-    return;
-  }
+  useEffect(() => {
+    const Notes = JSON.parse(localStorage.getItem("NOTES")!);
+    const deletedNotes = JSON.parse(localStorage.getItem("DELETED_NOTES")!);
+    const user = JSON.parse(localStorage.getItem("user")!);
+    setstoredNotesCount(Notes?.length);
+    setdeletedNotesCount(deletedNotes?.length);
+    setUser(user as User);
+  }, []);
 
   return (
     <div
@@ -160,7 +132,7 @@ function SideBar({ showSidebar, setNotes }: Props) {
                       "your offline, check internet connection and try again!"
                     );
                   } else {
-                    decideTodo();
+                    // decideTodo();
                   }
                 }}
               >
@@ -176,60 +148,61 @@ function SideBar({ showSidebar, setNotes }: Props) {
                     toast.info(
                       "your offline, check internet connection and try again!"
                     );
-                  } else {
-                    startLoading("Recieving saved Notes ...");
-                    const { savedNotes, deletedNotes } = await recieveNotes();
-                    finishLoading();
-                    if (
-                      savedNotes?.length == 0 ||
-                      (savedNotes?.length > 0 &&
-                        (deletedNotes?.length == 0 || deletedNotes?.length > 0))
-                    ) {
-                      const Notes =
-                        JSON.parse(localStorage.getItem("NOTES")!) ?? [];
-                      const DeletedNotes =
-                        JSON.parse(localStorage.getItem("DELETED_NOTES")!) ??
-                        [];
-                      console.log(savedNotes);
-                      savedNotes?.forEach((element: Note, index: number) => {
-                        const exists = Notes?.some(
-                          (n: any) => n?.id == element?.id
-                        );
-                        if (!exists) {
-                          Notes?.push(savedNotes[index]);
-                        }
-                      });
-                      deletedNotes?.forEach((element: Note, index: number) => {
-                        const exists = DeletedNotes.some(
-                          (n: any) => n?.id == element?.id
-                        );
-                        if (!exists) {
-                          Notes?.push(savedNotes[index]);
-                        }
-                      });
-                      setstoredNotesCount(Notes?.length);
-                      setdeletedNotesCount(DeletedNotes?.length);
-                      const route = Router.asPath;
-                      switch (route) {
-                        case "/recycle":
-                          setNotes(DeletedNotes);
-                          break;
-                        case "/home":
-                          setNotes(Notes);
-                          break;
-                        default:
-                          break;
-                      }
-                      localStorage.setItem("NOTES", JSON.stringify(Notes));
-                      localStorage.setItem(
-                        "DELETED_NOTES",
-                        JSON.stringify(DeletedNotes)
-                      );
-                      toast.dark("notes updated successfully");
-                    } else {
-                      return;
-                    }
-                  }
+                  } 
+                  // else {
+                  //   startLoading("Recieving saved Notes ...");
+                  //   const { savedNotes, deletedNotes } = await recieveNotes();
+                  //   finishLoading();
+                  //   if (
+                  //     savedNotes?.length == 0 ||
+                  //     (savedNotes?.length > 0 &&
+                  //       (deletedNotes?.length == 0 || deletedNotes?.length > 0))
+                  //   ) {
+                  //     const Notes =
+                  //       JSON.parse(localStorage.getItem("NOTES")!) ?? [];
+                  //     const DeletedNotes =
+                  //       JSON.parse(localStorage.getItem("DELETED_NOTES")!) ??
+                  //       [];
+                  //     console.log(savedNotes);
+                  //     savedNotes?.forEach((element: Note, index: number) => {
+                  //       const exists = Notes?.some(
+                  //         (n: any) => n?.id == element?.id
+                  //       );
+                  //       if (!exists) {
+                  //         Notes?.push(savedNotes[index]);
+                  //       }
+                  //     });
+                  //     deletedNotes?.forEach((element: Note, index: number) => {
+                  //       const exists = DeletedNotes.some(
+                  //         (n: any) => n?.id == element?.id
+                  //       );
+                  //       if (!exists) {
+                  //         Notes?.push(savedNotes[index]);
+                  //       }
+                  //     });
+                  //     setstoredNotesCount(Notes?.length);
+                  //     setdeletedNotesCount(DeletedNotes?.length);
+                  //     const route = Router.asPath;
+                  //     switch (route) {
+                  //       case "/recycle":
+                  //         setNotes(DeletedNotes);
+                  //         break;
+                  //       case "/home":
+                  //         setNotes(Notes);
+                  //         break;
+                  //       default:
+                  //         break;
+                  //     }
+                  //     localStorage.setItem("NOTES", JSON.stringify(Notes));
+                  //     localStorage.setItem(
+                  //       "DELETED_NOTES",
+                  //       JSON.stringify(DeletedNotes)
+                  //     );
+                  //     toast.dark("notes updated successfully");
+                  //   } else {
+                  //     return;
+                  //   }
+                  // }
                 }}
               >
                 <MdSystemUpdateAlt size={25} color="orangered" />

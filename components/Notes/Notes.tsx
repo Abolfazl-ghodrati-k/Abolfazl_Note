@@ -7,9 +7,10 @@ import NotesTitle from "./NotesTitle";
 import NotesButton from "./NotesButton";
 import NoteLoadingIndicator from "./NoteLoadingIndicator";
 import NoteNavLoadingIndicator from "./NoteNavLoadingIndicator";
+import dynamic from "next/dynamic";
 
-const NoteCard = lazy(() => import("./NoteCard"));
-const NotesNav = lazy(() => import("./NotesNav"));
+const NoteCard = dynamic(() => import("./NoteCard"));
+const NotesNav = dynamic(() => import("./NotesNav"));
 
 type Props = {
   Notes: Note[] | [];
@@ -50,7 +51,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
       ShowNote(note?.id);
     } else {
       const is_selected = isSelected(note?.id);
-      console.log(is_selected);
       if (is_selected) {
         const filteredNotes = selectedNotes?.filter(
           (selectednote) => selectednote?.id != note?.id
@@ -58,7 +58,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
         console.log(`filterednotes ${filteredNotes}`);
         setselectedNotes([...filteredNotes]);
       } else {
-        console.log(`how you dare`);
         setselectedNotes([...selectedNotes, { ...note }]);
       }
     }
@@ -67,7 +66,6 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
   function removeJunkNote() {
     localStorage.removeItem("CURRENTID");
     if (Notes) {
-      console.log(Notes);
       const updatedNotes = Notes?.filter((n) => {
         if (n?.text || n?.title) {
           return n;
@@ -93,9 +91,9 @@ function NotesContainer({ Notes, title, setNotes }: Props) {
           : `${styles.note_app_container}`
       }
     >
-      {showSidebar && (
+      {/* {showSidebar && (
         <SideBar showSidebar={showSidebarCopy} setNotes={setNotes} />
-      )}
+      )} */}
       <div className={styles.note_app}>
         {/* Title */}
         <NotesTitle

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import getConfig from "next/config";
 
 import { userService } from "../services/user-service";
+import Router from "next/router";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -76,9 +77,9 @@ function authHeader(url: string) {
 }
 
 function handleResponse<T>(response: ApiResponse<T>) {
-  console.log(response)
-  if([401, 403, 400].includes(response.status)) {
+  if([401, 403, 400, 500].includes(response.status) || response.message === "Invalid Token") {
     userService.logout()
+    Router.push('/')
     console.error(response)
     return null
   }

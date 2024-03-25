@@ -2,11 +2,8 @@ import React, { useEffect, useState, FormEvent, useRef } from "react";
 import LoginForm from "../components/LoginForm";
 import { userService } from "../services/user-service";
 import Router from "next/router";
-import { Note, User } from "./_types";
 import { fetchWrapper } from "../helpers/fetch-wrapper";
 import useLoading from "../hooks/useLoading";
-import Image from "next/image";
-// import usePwa from "../hooks/usePwa";
 
 export type ErrorTypo = {
   username?: string;
@@ -20,7 +17,6 @@ function LoginComponent() {
   const [username, Setusername] = useState<string>("");
   const [password, Setpassword] = useState<string>("");
   const [pasRepeat, SetpasRepeat] = useState<string>("");
-  const [loading, setloading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const Login_props = {
@@ -41,22 +37,24 @@ function LoginComponent() {
 
   useEffect(() => {
     startLoading("Validating ...");
-    console.log(userService.userValue);
-    Setusername("");
-    Setpassword("");
-    SetpasRepeat("");
-    setError("")
-    if (userService.userValue?.token && userService.userValue.guest) {
+    resetForm()
+    if (userService.userValue?.token || userService.userValue?.guest) {
       Router.push("/home");
     } else {
       finishLoading();
     }
   }, [mode]);
 
+  function resetForm() {
+    Setusername("");
+    Setpassword("");
+    SetpasRepeat("");
+    setError("")
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const isValid = Validation(username, password);
-    console.log(isValid);
     if (isValid) {
       if (mode == "signup") {
         startLoading("Signing up...✌️😒");
@@ -65,20 +63,20 @@ function LoginComponent() {
           setError(message ?? "Error occured on server see the log.");
         } else {
           Router.push("/home");
-          finishLoading();
         }
+        finishLoading();
       } else {
         startLoading("Logging in ... Welcome😁😘");
         const { user, message } = await userService.login(username, password);
         if (user) {
-          const { savedNotes, deletedNotes } = await recieveNotes();
-          localStorage.setItem("NOTES", JSON.stringify(savedNotes));
-          localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
-          Router.push("/home");
+          // const { savedNotes, deletedNotes } = await recieveNotes();
+          // localStorage.setItem("NOTES", JSON.stringify(savedNotes));
+          // localStorage.setItem("DELETED_NOTES", JSON.stringify(deletedNotes));
+          // Router.push("/home");
         } else {
           setError(message ?? "Error try again Later or enter as a guest");
         }
-        finishLoading();
+        // finishLoading();
       }
     }
   }
@@ -151,7 +149,7 @@ function LoginComponent() {
           seterrors={seterrors}
         />
         {error && (
-          <p style={{ color: "#FFB02E", fontSize: ".8rem" }}>{error}</p>
+          <p style={{ color: "#FFB02E", fontSize: ".8rem", margin: "5px 0" }}>{error}</p>
         )}
       </section>
     </div>
@@ -159,10 +157,11 @@ function LoginComponent() {
 }
 
 export async function recieveNotes() {
-  const notes = (await fetchWrapper.get("/api/notes")) as unknown as any;
-  const savedNotes = notes[0]?.Notes;
-  const deletedNotes = notes[0]?.deletedNotes;
-  return { savedNotes, deletedNotes };
+  const response = (await fetchWrapper.get<any>("/api/notes"));
+  console.log(response)
+  // const savedNotes = notes[0]?.Notes;
+  // const deletedNotes = notes[0]?.deletedNotes;
+  // return { savedNotes, deletedNotes };
 }
 
 export default LoginComponent;

@@ -7,14 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import type { NextComponentType } from "next"; //Import Component type
 import { observer } from "mobx-react-lite";
 import { User } from "./_types";
-import ContextWrapper from "../context/Loading";
-import LoadingModal from "../modals/LoadingModal";
 import Head from "next/head";
 import useLoading from "../hooks/useLoading";
-import Router, { useRouter } from "next/router";
-import ConfiramtionModal from "../modals/ConfiramtionModal";
-import ModalContextWrapper from "../context/Confirm";
 import UnAuthorized from "./UnAuthorized";
+import ErrorBoundary from "../hoc/ErrorBoundry";
+import { ModalsProvider } from "../components/ModalsManager";
+import ModalManager from "../managers/ModalManager";
 
 type CustomAppProps = AppProps & {
   Component: NextComponentType & { auth?: boolean }; // add auth type
@@ -22,15 +20,13 @@ type CustomAppProps = AppProps & {
 
 const App = observer(({ Component, pageProps }: CustomAppProps) => {
   return (
-    <>
+    <ErrorBoundary>
       <Head>
         <title>Abolfaz Note</title>
       </Head>
 
-      <ModalContextWrapper>
-        <ContextWrapper>
-          <LoadingModal />
-          <ConfiramtionModal />
+      <ModalsProvider>
+          <ModalManager />
           {Component.auth ? (
             <AuthControll>
               <Component {...pageProps} />
@@ -38,10 +34,9 @@ const App = observer(({ Component, pageProps }: CustomAppProps) => {
           ) : (
             <Component {...pageProps} />
           )}
-        </ContextWrapper>
-      </ModalContextWrapper>
+      </ModalsProvider>
       <ToastContainer position="top-center" />
-    </>
+    </ ErrorBoundary>
   );
 });
 
@@ -52,7 +47,6 @@ type Props = {
 };
 
 const AuthControll = ({ children }: Props) => {
-  const [res, setres] = useState<any>();
   const [error, setError] = useState("");
   const { startLoading, finishLoading } = useLoading();
 
@@ -61,11 +55,10 @@ const AuthControll = ({ children }: Props) => {
     setError("");
     const user = JSON.parse(localStorage.getItem("user")!) as User;
     authenticate(user).catch((err) => {
-      if(typeof(err) === "string"){
-        setError(err)
-      }
-      else {
-        setError("Some thing went wrong, please  try again later.")
+      if (typeof err === "string") {
+        setError(err);
+      } else {
+        setError("Some thing went wrong, please  try again later.");
       }
     });
     finishLoading();
@@ -73,22 +66,21 @@ const AuthControll = ({ children }: Props) => {
 
   const authenticate = useCallback(async (user: User) => {
     if (user?.guest) {
-      setres(user);
+      setError("");
     } else if (!user?.guest) {
-      (await userService.getAll().then((response: any | unknown) => {
-        if (response?.message?.username) {
-          setres(response);
-        } else {
-          throw new Error("Authentication failed please login again.");
-        }
-      })) as unknown as any;
+      const response = await userService.getAll();
+      if (response.ok) {
+        setError("");
+      } else {
+        setError(response.message ?? "some error occured");
+      }
     }
   }, []);
 
-  if(error) {
-    userService.logout()
-    return <UnAuthorized error={error} />
+  if (error) {
+    userService.logout();
+    return <UnAuthorized error={error} />;
   }
 
-  return res?.guest || (res?.message?.username && children);
+  return <>{children}</>;
 };

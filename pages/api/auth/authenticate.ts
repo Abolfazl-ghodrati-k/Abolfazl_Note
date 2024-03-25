@@ -58,14 +58,15 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       );
 
       // // return basic user details and token
-      const newUser = {
-        id: user._id,
+      user.token = token
+      await user.save()
+
+      const createdUser = {
         username: user.username,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        token: token,
-      };
-      return apiResponse<null>(res, 200, "Hello dear user", null);
+        token
+      }
+      
+      return apiResponse<any>(res, 200, "Hello dear user", createdUser);
     } else if (!isSamePass) {
       return apiResponse<null>(res, 400, "Wrong username or password", null);
     }

@@ -32,16 +32,15 @@ async function login(username: string, password: string) {
       password,
     }
   );
-  let user: null | User = null;
 
-  if (response?.data) {
-    userSubject.next(response.data);
-    user = response.data;
+  if (!response?.data) {
+    return { user: null, message: response?.message }
   }
+  userSubject.next(response.data);
 
-  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem("user", JSON.stringify(response.data));
 
-  return { user, message: response?.message };
+  return { user: response.data, message: response?.message };
 }
 
 function asGuest() {
@@ -67,6 +66,8 @@ async function signup(username: string, password: string) {
     userSubject.next(user);
   }
 
+  console.log(response);
+
   localStorage.setItem("user", JSON.stringify(user));
 
   return { user, message: response?.message };
@@ -78,6 +79,13 @@ function logout() {
   userSubject.next(null);
 }
 
-function getAll() {
-  return fetchWrapper.get(baseUrl);
+async function getAll() {
+  const response = await fetchWrapper.get<User>(baseUrl);
+  if (response) {
+    return { message: response.message, ok: true };
+  }
+  return {
+    message: "Some error happened try again later",
+    ok: false,
+  };
 }

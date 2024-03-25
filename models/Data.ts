@@ -1,22 +1,25 @@
-import mongoose, { Types } from "mongoose";
+import mongoose, { Model, SchemaDefinitionProperty, Types } from "mongoose";
 import { Note } from "../pages/_types";
-import User from "./User";
+import User, { IUser } from "./User";
+import { ObjectId } from "mongodb";
 
-export interface Idata extends INotes {
-  _id: Types.ObjectId;
-  user: {
-    username: string;
-  };
+export interface INote {
+  id?: string;
+  title?: string;
+  text?: string;
+  date?: string;
+  clock?: string;
 }
 
-export interface INotes {
-  Notes?: Note[];
-  deletedNotes?: Note[];
+export interface INotes extends Document {
+  notes?: INote[];
+  deletedNotes?: INote[];
+  user:  SchemaDefinitionProperty<ObjectId> | undefined;
 }
 
-const dataSchema = new mongoose.Schema({
+const dataSchema = new mongoose.Schema<INotes>({
   user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-  Notes: [
+  notes: [
     {
       id: { type: String, default: "",  },
       title: { type: String, default: "" },
@@ -38,5 +41,5 @@ const dataSchema = new mongoose.Schema({
   ],
 });
 
-const NOTES = mongoose.models.NOTES || mongoose.model("NOTES", dataSchema);
+const NOTES: Model<INotes> = mongoose.models.NOTES || mongoose.model<INotes>("NOTES", dataSchema);
 export default NOTES;
